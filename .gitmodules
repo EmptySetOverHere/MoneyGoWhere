@@ -1,0 +1,3 @@
+[submodule "receipt_generator"]
+	path = receipt_generator
+	url = .\\receipt_generator\\
