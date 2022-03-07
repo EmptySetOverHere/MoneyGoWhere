@@ -1,8 +1,11 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
-import 'model/UserModel.dart';
+import 'model/model_utils.dart';
+
 import 'dart:convert' show json;
+
+import 'request/request_utils.dart';
 
 void main() => runApp(MyApp());
 
@@ -70,7 +73,25 @@ class BodyWidget extends StatelessWidget {
               RaisedButton(
                 child: Text('get User Model'),
                 onPressed: (){
-                  _makeGetUserModelRequest();
+                  makeGetUserModelRequest();
+                },
+              ),
+              RaisedButton(
+                child: Text('get Month Report Model'),
+                onPressed: (){
+                  makeGetMonthReportModelRequest();
+                },
+              ),
+              RaisedButton(
+                child: Text('get Year Report Model'),
+                onPressed: (){
+                  makeGetYearReportModelRequest();
+                },
+              ),
+              RaisedButton(
+                child: Text('get Merchant Model'),
+                onPressed: (){
+                  makeGetMerchantModelRequest();
                 },
               )
             ],
@@ -159,17 +180,9 @@ class BodyWidget extends StatelessWidget {
     print('Status: $statusCode, $body');
   }
 
-  void _makeGetUserModelRequest() async{
-    var jsonData = json.encode({"username": "username", "password": "password"});
-    Response response = await post(_hostname(), headers: headers, body: jsonData);
-    // examples of info available in response
-    int statusCode = response.statusCode;
-    String jsonString = response.body;
-    print(jsonString);
-    UserModel myModel = UserModel.fromJson(jsonString);
-    print(myModel.toString());
-    print('Status: $statusCode, $myModel');
-}
+
+
+
 }
 
 // For help converting JSON to objects in Flutter see
