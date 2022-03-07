@@ -1,12 +1,16 @@
 package com.cz2006.group3;
 
 import java.io.File;
+import java.util.ArrayList;
 
 import org.apache.catalina.Context;
 import org.apache.catalina.WebResourceRoot;
 import org.apache.catalina.startup.Tomcat;
 import org.apache.catalina.webresources.DirResourceSet;
 import org.apache.catalina.webresources.StandardRoot;
+
+import com.cz2006.group3.bean.DBConnector;
+import com.cz2006.group3.bean.UserData;
 
 public class Main {
 
@@ -19,7 +23,13 @@ public class Main {
 		resources.addPreResources(
 				new DirResourceSet(resources, "/WEB-INF/classes", new File("target/classes").getAbsolutePath(), "/"));
 		ctx.setResources(resources);
+
+		db.Init();
 		tomcat.start();
 		tomcat.getServer().await();
+
 	}
+
+	static final DBConnector db = new DBConnector();
+
 }
