@@ -22,11 +22,11 @@ public class ReceiptData{
 
     @Override
     public String toString(){
-        return "{\"errorCode\":" + id
-                + ",\"errorMsg\":\"" + merchant
-                + "\",\"dateTime\":" + dateTime.toString()
+        return "{\"id\":" + "\""+ id + "\""
+                + ",\"merchant\":" + "\"" + merchant +"\""
+                + ",\"dateTime\":" + "\"" + dateTime.toString()
                 + "\",\"totalPrice\":" + totalPrice
-                + "\",\"category\":" + category
-                + "\",\"content\":" + content + "}";
+                + ",\"category\":" + "\"" + category + "\""
+                + ",\"content\":" + "\"" + content + "\"}";
     }
 }

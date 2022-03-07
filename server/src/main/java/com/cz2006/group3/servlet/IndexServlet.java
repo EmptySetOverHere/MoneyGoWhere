@@ -10,16 +10,16 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.cz2006.group3.bean.UserData;
 import com.cz2006.group3.bean.UserModel;
 
-@WebServlet(urlPatterns = "/")
+@WebServlet(urlPatterns = "/home")
 public class IndexServlet extends HttpServlet {
-    static private Map<String, String> mockDatabase = Map.of("Hello,", "CZ2006Group3!");
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-
-        UserModel u1 = new UserModel(-1, "bob123", 0, "alice.google.com", "alice123", "alice");
+        UserData u1data = new UserData(0, "alice.google.com", "alice123", "alice");
+        UserModel u1 = new UserModel(-1, "bob123", u1data);
 
 //        String user = (String) req.getSession().getAttribute("user");
 //        String lang = parseLanguageFromCookie(req);
@@ -57,7 +57,8 @@ public class IndexServlet extends HttpServlet {
         resp.setContentType("application/json");
         resp.setCharacterEncoding("UTF-8");
         PrintWriter pw = resp.getWriter();
-        UserModel u1 = new UserModel(-1, "bob123", 0, "alice.google.com", "1", "0");
+        UserData u1data  = new UserData(0, "alice.google.com", "1", "0");
+        UserModel u1 = new UserModel(-1, "bob123", u1data);
 
         pw.write(u1.toString());
         pw.flush();

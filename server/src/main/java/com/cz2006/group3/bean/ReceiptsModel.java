@@ -15,11 +15,8 @@ public class ReceiptsModel {
         this.data = new ArrayList<ReceiptData>();
     }
 
-    public void addReceipt(String id, String merchant,
-                            LocalDateTime dateTime,
-                           double totalPrice, String category,
-                           String content){
-        data.add(new ReceiptData(id, merchant, dateTime, totalPrice, category, content));
+    public void addReceipt(ReceiptData receipt){
+        data.add(receipt);
     }
 
     // TODO: need to think twice
