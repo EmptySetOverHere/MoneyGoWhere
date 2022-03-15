@@ -68,6 +68,38 @@ class ReceiptData {
         : 'null'}}';
   }
 }
+
+class SearchFilter{
+  String? content;
+  List<String>? category = [];
+  Map<String, double>? priceRange;
+  Map<String, String>? dateRange;
+
+  SearchFilter.fromParams({this.content, this.category, this.priceRange, this.dateRange});
+
+  SearchFilter.fromJson(jsonRes){
+    if(jsonRes is String){
+      jsonRes = json.decode(jsonRes);
+    }
+    content = jsonRes['content'];
+    category = jsonRes['category'];
+    priceRange = jsonRes['priceRange'];
+    dateRange = jsonRes['dateRange'];
+  }
+
+  @override
+  String toString(){
+    return '{"content":${content != null?
+    '${json.encode(content)}':'null'}, "category": ${category != null?
+    '${json.encode(category)}':'null'}, "priceRange": ${priceRange != null?
+    '${json.encode(priceRange)}':'null'}, "dateRange": ${dateRange != null?
+    '${json.encode(dateRange)}':'null'}}';
+  }
+
+}
+
+
+
   void main() {
     String jsonData = '{"errorCode":0, "errorMsg":"error","data":[{"id":"123", "merchant":"Merchant1", "dateTime":"2022-2-28 12:00", "totalPrice": 123.56, "category":"food", "content":"nothing"}]}';
 

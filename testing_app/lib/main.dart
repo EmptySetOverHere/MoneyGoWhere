@@ -70,30 +70,30 @@ class BodyWidget extends StatelessWidget {
                   _makeDeleteRequest();
                 },
               ),
-              RaisedButton(
-                child: Text('get User Model'),
-                onPressed: (){
-                  makeGetUserModelRequest();
-                },
-              ),
-              RaisedButton(
-                child: Text('get Month Report Model'),
-                onPressed: (){
-                  makeGetMonthReportModelRequest();
-                },
-              ),
-              RaisedButton(
-                child: Text('get Year Report Model'),
-                onPressed: (){
-                  makeGetYearReportModelRequest();
-                },
-              ),
-              RaisedButton(
-                child: Text('get Merchant Model'),
-                onPressed: (){
-                  makeGetMerchantModelRequest();
-                },
-              )
+              // RaisedButton(
+              //   child: Text('get User Model'),
+              //   onPressed: (){
+              //     makeGetUserModelRequest();
+              //   },
+              // ),
+              // RaisedButton(
+              //   child: Text('get Month Report Model'),
+              //   onPressed: (){
+              //     makeGetMonthReportModelRequest();
+              //   },
+              // ),
+              // RaisedButton(
+              //   child: Text('get Year Report Model'),
+              //   onPressed: (){
+              //     makeGetYearReportModelRequest();
+              //   },
+              // ),
+              // RaisedButton(
+              //   child: Text('get Merchant Model'),
+              //   onPressed: (){
+              //     makeGetMerchantModelRequest();
+              //   },
+              // )
             ],
           ),
         ),

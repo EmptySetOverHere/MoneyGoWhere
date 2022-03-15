@@ -1,15 +1,11 @@
 import 'package:http/http.dart';
 import '../model/ReportModel.dart';
+import 'Api.dart';
 
-String _hostname(){
-return 'http://10.27.156.70:8080';
-}
 
-Future<ReportModel> makeGetMonthReportModelRequest() async {
-  int year = 2021;
-  int month = 12;
-  String url = '${_hostname()}/report?year=$year&month=$month';
-  Response response =  await get(url);
+Future<ReportModel> makeGetMonthReportModelRequest(Map<String, String> curHeaders, int year, int month) async {
+  String url = '${Api.REPORTS}?year=$year&month=$month';
+  Response response =  await get(url, headers: curHeaders);
   int statusCode = response.statusCode;
   String jsonString = response.body;
   print(jsonString);
@@ -19,15 +15,15 @@ Future<ReportModel> makeGetMonthReportModelRequest() async {
   return myModel;
 }
 
-void makeGetYearReportModelRequest() async {
-    int year = 2021;
+Future<ReportModel> makeGetYearReportModelRequest(Map<String, String> curHeaders, int year) async {
     int? month = null;
-    String url = '${_hostname()}/report?year=$year&month=$month';
-    Response response = await get(url);
+    String url = '${Api.REPORTS}?year=$year&month=$month';
+    Response response = await get(url,  headers: curHeaders);
     int statusCode = response.statusCode;
     String jsonString = response.body;
     print(jsonString);
     ReportModel myModel = ReportModel.fromJson(jsonString);
     print(myModel.toString());
     print('Status: $statusCode, $myModel');
+    return myModel;
 }
