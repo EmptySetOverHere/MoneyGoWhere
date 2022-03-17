@@ -101,7 +101,9 @@ class BodyWidget extends StatelessWidget {
     );
   }
 
-  static const Map<String, String> headers = {"Content-type": "application/json"};
+  static const Map<String, String> headers = {
+    "Content-type": "application/json"
+  };
 
   // access localhost from the emulator/simulator
   String _hostname() {
@@ -142,6 +144,7 @@ class BodyWidget extends StatelessWidget {
     String body = response.body;
     print('Status: $statusCode, $body');
   }
+
   // PUT
   _makePutRequest() async {
     // set up PUT request arguments
@@ -179,16 +182,11 @@ class BodyWidget extends StatelessWidget {
     String body = response.body;
     print('Status: $statusCode, $body');
   }
-
-
-
-
 }
 
 // For help converting JSON to objects in Flutter see
 // this post https://stackoverflow.com/a/54657953
 class Fruit {
-
   int id = 0;
   String fruit;
   String color;
