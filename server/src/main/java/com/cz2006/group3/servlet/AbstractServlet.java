@@ -6,6 +6,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
+/**
+ * This is an abstract class for expending java servlet module to provide PATCH service.
+ * All other servlet classes in this project are inherited from this class.
+ */
 public abstract class AbstractServlet extends HttpServlet {
     @Override
     protected void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException{
@@ -16,6 +20,6 @@ public abstract class AbstractServlet extends HttpServlet {
         }
     }
 
-    public void doPatch(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException{}
+    protected void doPatch(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException{}
 
 }
