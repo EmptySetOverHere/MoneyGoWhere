@@ -4,12 +4,30 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Report object represents individual monthly/yearly report entity.
+ */
 public class ReportData {
+    /**
+     * the aggregated expenditure to be displayed in a report.
+     */
     double totalExpenditure;
+    /**
+     * the unit monthly/daily expenditure to be displayed in a report.
+     */
     ArrayList<Double> unitExpenses;
+    /**
+     * the calculated expenditure to be displayed in a report according to category.
+     */
     HashMap<String, Double> categoricalExpenses;
+    /**
+     * a list of top spent receipts.
+     */
     ArrayList<ReceiptData> topReceipts;
 
+    /**
+     * Report constructor.
+     */
     public ReportData(double totalExpenditure, ArrayList<Double> unitExpenses,
                       HashMap<String, Double> categoricalExpenses, ArrayList<ReceiptData> topReceipts){
         this.totalExpenditure = totalExpenditure;
@@ -18,6 +36,11 @@ public class ReportData {
         this.topReceipts = topReceipts;
     }
 
+    /**
+     * Method to convert a report object to a JSON String.
+     *
+     * @return a report JSON String.
+     */
     @Override
     public String toString(){
         String ret = "{\"totalExpenditure\":" + totalExpenditure
