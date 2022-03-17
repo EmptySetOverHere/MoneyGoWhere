@@ -6,7 +6,6 @@ import java.util.*;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -14,11 +13,10 @@ import com.cz2006.group3.bean.UserData;
 import com.cz2006.group3.bean.UserModel;
 
 @WebServlet(urlPatterns = "/home")
-public class IndexServlet extends HttpServlet {
-
+public class IndexServlet extends AbstractServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        UserData u1data = new UserData(0, "alice.google.com", "alice123", "alice");
+        UserData u1data = new UserData(0, "alice.google.com", "alice123", "alice", 12341234);
         UserModel u1 = new UserModel(-1, "bob123", u1data);
 
 //        String user = (String) req.getSession().getAttribute("user");
@@ -47,7 +45,7 @@ public class IndexServlet extends HttpServlet {
     }
 
     @Override
-    public void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         BufferedReader reader = new BufferedReader(new InputStreamReader(req.getInputStream()));
         // String.of(new InputStreamReader(eeq))
         // String username = req.getParameter("username");
@@ -57,7 +55,7 @@ public class IndexServlet extends HttpServlet {
         resp.setContentType("application/json");
         resp.setCharacterEncoding("UTF-8");
         PrintWriter pw = resp.getWriter();
-        UserData u1data  = new UserData(0, "alice.google.com", "1", "0");
+        UserData u1data  = new UserData(0, "alice.google.com", "1", "0", 23452345);
         UserModel u1 = new UserModel(-1, "bob123", u1data);
 
         pw.write(u1.toString());
@@ -65,6 +63,10 @@ public class IndexServlet extends HttpServlet {
 
 
     }
+    @Override
+    public void doPatch(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException{}
+    @Override
+    public void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException{}
 
     private String parseLanguageFromCookie(HttpServletRequest req) {
         Cookie[] cookies = req.getCookies();

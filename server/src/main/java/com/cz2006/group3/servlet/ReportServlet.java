@@ -4,7 +4,6 @@ import com.cz2006.group3.bean.*;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.BufferedReader;
@@ -17,7 +16,7 @@ import java.util.HashMap;
 
 
 @WebServlet(urlPatterns = "/report")
-public class ReportServlet extends HttpServlet {
+public class ReportServlet extends AbstractServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
@@ -50,13 +49,11 @@ public class ReportServlet extends HttpServlet {
         resp.setContentType("application/json");
         resp.setCharacterEncoding("UTF-8");
         PrintWriter pw = resp.getWriter();
-        UserData u1data  = new UserData(0, "alice.google.com", "1", "0");
+        UserData u1data  = new UserData(0, "alice.google.com", "1", "0", 88888888);
         UserModel u1 = new UserModel(-1, "bob123", u1data);
 
         pw.write(u1.toString());
         pw.flush();
-
-
     }
 
 }

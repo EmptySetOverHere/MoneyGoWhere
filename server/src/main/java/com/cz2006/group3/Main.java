@@ -23,13 +23,11 @@ public class Main {
 		resources.addPreResources(
 				new DirResourceSet(resources, "/WEB-INF/classes", new File("target/classes").getAbsolutePath(), "/"));
 		ctx.setResources(resources);
-
-		db.Init();
 		tomcat.start();
 		tomcat.getServer().await();
 
 	}
 
-	static final DBConnector db = new DBConnector();
+	// static final DBConnector db = new DBConnector();
 
 }

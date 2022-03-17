@@ -5,12 +5,15 @@ public class UserData{
     String email;
     String password;
     String username;
+    int phoneno;
 
-    public UserData(int id, String email, String password, String username){
+
+    public UserData(int id, String email, String password, String username, int phoneno){
         this.id = id;
         this.email = email;
         this.password = password;
         this.username = username;
+        this.phoneno = phoneno;
     }
 
     public String getPassword(){
@@ -24,12 +27,14 @@ public class UserData{
         return this.username;
     }
 
+    public int getPhoneno() { return this.phoneno;}
     @Override
     public String toString() {
         return "{\"id\":" + id
                 + ",\"email\":\"" + email
                 + "\",\"password\":\"" + password
                 + "\",\"username\":\"" + username
+                + "\",\"phoneno\":\"" +phoneno
                 + "\"}";
     }
 
