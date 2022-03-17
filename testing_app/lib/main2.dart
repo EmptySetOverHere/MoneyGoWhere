@@ -41,7 +41,7 @@ class BodyWidget extends StatelessWidget {
                 onPressed: () {
                   Future<UserModel> future = makeLoginRequest("123456@gg.com", "123456");
                   future.then((value) { print(value); if(value.errorCode! > 0 ){
-                    headers['username'] = "123456@gg.com";
+                    headers['email'] = "123456@gg.com";
                     headers['password'] = "123456";
                   };},
                       onError: (e) { print(e); });
@@ -54,9 +54,9 @@ class BodyWidget extends StatelessWidget {
                   Future<String> check = checkEmailRequest("livelycloud@e.ntu.edu.sg");
                   check.then((value) { print(value); print("here1");},
                       onError: (e) { print(e); });
-
-                  Future<UserModel> future = makeRegisterRequest("123456@gg.com", "123456");
-                  future.then((value) { print(value); print("here2");},
+                  print("here2");
+                  Future<String> future = makeRegisterRequest("123456@gg.com", "123456");
+                  future.then((value) { print(value); print("here3");},
                       onError: (e) { print(e); });
 
                 },

@@ -31,10 +31,10 @@ class UserData {
   String? email;
   String? password;
   String? username;
-  int? phoneNumber;
+  int? phoneno;
 
 
-  UserData.fromParams({this.id, this.email, this.password, this.username, this.phoneNumber});
+  UserData.fromParams({this.id, this.email, this.password, this.username, this.phoneno});
 
   UserData.fromJson(jsonRes) {
     if (jsonRes is String){
@@ -44,7 +44,7 @@ class UserData {
     email = jsonRes['email'];
     password = jsonRes['password'];
     username = jsonRes['username'];
-    phoneNumber = jsonRes['phoneNumber'];
+    phoneno = jsonRes['phoneno'];
   }
 
   @override
@@ -52,13 +52,13 @@ class UserData {
     return '{"id": $id, "email": ${email != null?
     '${json.encode(email)}':'null'},"password": ${password != null?
     '${json.encode(password)}':'null'},"username": ${username != null?
-    '${json.encode(username)}':'null'},"phoneNumber":${phoneNumber != null?
-    '${json.encode(phoneNumber)}':'null'}}';
+    '${json.encode(username)}':'null'},"phoneno":${phoneno != null?
+    '${json.encode(phoneno)}':'null'}}';
   }
 }
 
 void main(){
-  UserData myData = UserData.fromParams(id: 123, email:"email", password: "password",username: "username",phoneNumber:88335566);
+  UserData myData = UserData.fromParams(id: 123, email:"email", password: "password",username: "username",phoneno:88335566);
   UserModel myModel = UserModel.fromParams(errorCode: 0, errorMsg: "No", data: myData);
   print(myData.toString());
   print(myModel.toString());

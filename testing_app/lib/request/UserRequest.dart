@@ -18,13 +18,11 @@ Future<UserModel> makeLoginRequest(String email, String password) async{
   return myModel;
 }
 
-Future<UserModel> makeRegisterRequest(String email, String password) async{
+Future<String> makeRegisterRequest(String email, String password) async{
   var jsonData = json.encode({"email": email, "password":password});
   Response response = await post(Api.REGISTER, headers: headers, body: jsonData);
   int statusCode = response.statusCode;
-  String jsonString = response.body;
-  UserModel myModel = UserModel.fromJson(jsonString);
-  return myModel;
+  return response.body;
 }
 
 Future<String> checkEmailRequest(String email) async{
