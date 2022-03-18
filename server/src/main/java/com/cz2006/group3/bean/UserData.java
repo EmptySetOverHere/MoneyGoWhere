@@ -37,6 +37,15 @@ public class UserData{
     }
 
     /**
+     * @return the username field of a user.
+     */
+    public String getUsername() {return  this.username; }
+
+    /**
+     * @return the phoneno field of a user.
+     */
+    public int getPhoneno() {return this.phoneno;}
+    /**
      * @return the password field of a user.
      */
     public String getPassword() { return this.password; }

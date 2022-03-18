@@ -41,6 +41,12 @@
 			<artifactId>json</artifactId>
 			<version>20180813</version>
 		</dependency>
+		<dependency>
+			<groupId>org.apache.maven.plugins</groupId>
+			<artifactId>maven-javadoc-plugin</artifactId>
+			<version>3.3.2</version>
+			<type>maven-plugin</type>
+		</dependency>
 	</dependencies>
 	<build>
 		<plugins>
@@ -52,7 +58,6 @@
 					<target>9</target>
 				</configuration>
 			</plugin>
-
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-war-plugin</artifactId>

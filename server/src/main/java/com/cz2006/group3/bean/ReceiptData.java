@@ -19,6 +19,10 @@ public class ReceiptData{
      */
     String merchant;
     /**
+     * The postal code of the merchant.
+     */
+    int postalCode;
+    /**
      * The timestamp of the receipt.
      */
     LocalDateTime dateTime;
@@ -38,11 +42,12 @@ public class ReceiptData{
     /**
      * Receipt Constructor.
      */
-    public ReceiptData(int index, String id, String merchant, LocalDateTime dateTime,
+    public ReceiptData(int index, String id, String merchant, int postalCode, LocalDateTime dateTime,
                        double totalPrice, String category, String content) {
         this.index = index;
         this.id = id;
         this.merchant = merchant;
+        this.postalCode = postalCode;
         this.dateTime = dateTime;
         this.totalPrice = totalPrice;
         this.category = category;
@@ -59,6 +64,7 @@ public class ReceiptData{
         return "{ \"index\":" + index
                 + ",\"id\":" + "\""+ id + "\""
                 + ",\"merchant\":" + "\"" + merchant +"\""
+                + ",\"postalCode\":" + postalCode
                 + ",\"dateTime\":" + "\"" + dateTime.toString()
                 + "\",\"totalPrice\":" + totalPrice
                 + ",\"category\":" + "\"" + category + "\""

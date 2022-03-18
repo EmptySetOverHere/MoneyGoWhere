@@ -24,6 +24,5 @@ public class Main {
 		ctx.setResources(resources);
 		tomcat.start();
 		tomcat.getServer().await();
-
 	}
 }

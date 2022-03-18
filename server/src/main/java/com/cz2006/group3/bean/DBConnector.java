@@ -7,7 +7,9 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 
 /**
@@ -31,11 +33,11 @@ public class DBConnector{
     /**
      * database user account contant.
      */
-    static final String jdbcUsername = "root";
+    static final String jdbcUsername = "cz2006goup3";
     /**
      * database account password
      */
-    static final String jdbcPassword = "Sally271828*";
+    static final String jdbcPassword = "cz2006group3";
 
     static{
         System.out.println("Initiating Connection to MySQL...");
@@ -148,10 +150,10 @@ public class DBConnector{
 
             System.out.println(uid);
             // create receipt table for each newly create user
-            String tableName = 'U' + uid + "Receipts";
+            String tableName = 'U' + uid + "_Receipts";
             try (PreparedStatement ps = conn.prepareStatement(
-                    " CREATE TABLE " + tableName + " (index BIGINT NOT NULL AUTO_CREMENT, rid VARCHAR(100), merchant VARCHAR(100)," +
-                            " datetime TIMESTAMP, totalPrice DOUBLE, category VARCHAR(20), content VARCHAR(10000), PRIMARY KEY (index));")){
+                    " CREATE TABLE " + tableName + " (rindex INT NOT NULL AUTO_INCREMENT, rid VARCHAR(100), merchant VARCHAR(100), postalCode INT," +
+                            " datetime_ TIMESTAMP, totalPrice DOUBLE, category VARCHAR(20), content VARCHAR(10000), PRIMARY KEY (index));")){
                 ps.executeUpdate();
             }
         }
@@ -166,8 +168,11 @@ public class DBConnector{
      */
     public static void updateUser(UserData user) throws SQLException {
         try (Connection conn = ds.getConnection()) {
-            try (PreparedStatement ps = conn.prepareStatement("UPDATE users SET WHERE uid = ?")) {
-                ps.setInt(1, user.getUID());
+            try (PreparedStatement ps = conn.prepareStatement("UPDATE users SET username = ?, passowrd = ?, phoneno = ? WHERE uid = ?")) {
+                ps.setString(1, user.getUsername());
+                ps.setString(2, user.getPassword());
+                ps.setInt(3, user.getPhoneno());
+                ps.setInt(4, user.getUID());
                 ps.executeUpdate();
             }
         }
@@ -180,8 +185,15 @@ public class DBConnector{
      * @throws SQLException
      */
     public static void DeleteUser(int uid) throws SQLException{
-        try (Connection conn = ds.getConnection()){
-            //TODO:
+        try (Connection conn = ds.getConnection()) {
+            String tableName = 'U'+uid+"_Receipts";
+            try (PreparedStatement ps = conn.prepareStatement("DELETE FROM users WHERE uid = ?")) {
+                ps.setInt(1, uid);
+                ps.executeUpdate();
+            }
+            try (PreparedStatement ps = conn.prepareStatement("DROP TABLE " + tableName + ";")){
+                ps.executeUpdate();
+            }
         }
     }
 
@@ -195,9 +207,8 @@ public class DBConnector{
     public static ArrayList<ReceiptData> getReceiptsDefault(int uid) throws SQLException {
         ArrayList<ReceiptData> receipts = new ArrayList<>();
         try(Connection conn = ds.getConnection()){
-            String tableName = 'U' + uid + "Receipts";
-            try (PreparedStatement ps = conn.prepareStatement("SELECT TOP 20 * FROM ? ORDER BY datetime DESC;")){
-                ps.setString(1, tableName);
+            String tableName = 'U' + uid + "_Receipts";
+            try (PreparedStatement ps = conn.prepareStatement("SELECT TOP 20 * FROM "+tableName+" ORDER BY datetime_ DESC;")){
                 try (ResultSet rs = ps.executeQuery()){
                     while (rs.next()){
                         receipts.add(extractReceipt(rs));
@@ -220,8 +231,8 @@ public class DBConnector{
         String condition = ""; ArrayList<String> categories = null;
         if (criteria.getContent()!=null){ condition += "content LIKE ? AND "; }
         if (criteria.getCategory() != null){ categories = criteria.getCategory(); for (int i = 0; i<categories.size(); i++) { condition += "categeory = ? AND "; } }
-        if (criteria.getStartDate() != null){ condition += "DATE(datetime) >= ? AND "; }
-        if (criteria.getEndDate() != null){ condition += "DATE(datetime) <= ? AND "; }
+        if (criteria.getStartDate() != null){ condition += "DATE(datetime_) >= ? AND "; }
+        if (criteria.getEndDate() != null){ condition += "DATE(datetime_) <= ? AND "; }
         if (criteria.getPriceLower() != null){ condition += "totalPrice >= ? AND "; }
         if (criteria.getPriceUpper() != null){ condition += "totalPrice <= ? AND "; }
         System.out.println(condition);
@@ -230,10 +241,10 @@ public class DBConnector{
         }
         ArrayList<ReceiptData> receipts = new ArrayList<>();
         try(Connection conn = ds.getConnection()){
-            String tableName = 'U' +uid +"Receipts";
+            String tableName = 'U' +uid +"_Receipts";
             try (PreparedStatement ps = conn.prepareStatement("SELECT * FROM " + tableName +
                     "WHERE " + condition +
-                    "ORDER BY datetime DESC;")){
+                    "ORDER BY dateTime DESC;")){
                 int index = 0;
                 if (criteria.getContent() != null){ ps.setString(++index,"%" + criteria.getContent() + "%");}
                 if (criteria.getCategory() != null){ for (String c : categories){ ps.setString(++index, c); } }
@@ -259,21 +270,21 @@ public class DBConnector{
      * @throws SQLException
      */
     public static void putReceipts(int uid, JSONArray receipts) throws SQLException {
-        // TODO:
         // DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-        String tableName = 'U' + uid + "Receipts";
+        String tableName = 'U' + uid + "_Receipts";
         try(Connection conn = ds.getConnection()) {
             for (int i = 0; i<receipts.length(); i++){
                 JSONObject r = (JSONObject) receipts.get(i);
                 try (PreparedStatement ps = conn.prepareStatement("INSERT INTO " + tableName +
-                        " (rid, merchant, datetime, totalPrice, category, content)" +
+                        " (rid, merchant, postalCode, datetime_, totalPrice, category, content)" +
                         " VALUES (?, ?, ?, ?, ?, ? )")){
                     ps.setString(1, r.getString("id"));
                     ps.setString(2, r.getString("merchant"));
-                    ps.setString(3, r.getString("dateTime"));
-                    ps.setDouble(4, r.getDouble("totalPrice"));
-                    ps.setString(5, r.getString("category"));
-                    ps.setString(6, r.getString("content"));
+                    ps.setInt(3, r.getInt("postalCode"));
+                    ps.setString(4, r.getString("datetime_"));
+                    ps.setDouble(5, r.getDouble("totalPrice"));
+                    ps.setString(6, r.getString("category"));
+                    ps.setString(7, r.getString("content"));
                     ps.executeUpdate();
                 }
             }
@@ -289,10 +300,9 @@ public class DBConnector{
      */
     public static void deleteReceipt(int uid, int rindex) throws SQLException {
         try (Connection conn = ds.getConnection()){
-            String tableName = 'U' + uid + "Receipts";
-            // TODO:
-            try (PreparedStatement ps = conn.prepareStatement("")){
-                ps.setString(1, tableName);
+            String tableName = 'U' + uid + "_Receipts";
+            try (PreparedStatement ps = conn.prepareStatement("DELETE FROM " + tableName + " WHERE rindex = ?;")){
+                ps.setInt(1, rindex);
                 ps.executeUpdate();
             }
         }
@@ -306,10 +316,11 @@ public class DBConnector{
      * @throws SQLException
      */
     static ReceiptData extractReceipt(ResultSet rs) throws SQLException{
-        ReceiptData receipt = new ReceiptData(rs.getInt("index"),
+        ReceiptData receipt = new ReceiptData(rs.getInt("rindex"),
                                     rs.getString("rid"),
                                     rs.getString("merchant"),
-                                    rs.getTimestamp("dateTime").toLocalDateTime(),
+                                    rs.getInt("postalCode"),
+                                    rs.getTimestamp("datetime_").toLocalDateTime(),
                                     rs.getDouble("totalPrice"),
                                     rs.getString("category"),
                                     rs.getString("content"));
@@ -326,9 +337,9 @@ public class DBConnector{
     public static ArrayList<MerchantData> getMerchantsDefault(int uid) throws SQLException {
         ArrayList<MerchantData> merchants = new ArrayList<>();
         try(Connection conn = ds.getConnection()){
-            String tableName = 'U' + uid + "Receipts";
-            try (PreparedStatement ps = conn.prepareStatement("SELECT TOP 10 * FROM ?, Merchants ORDER BY datetime DESC;")){
-                ps.setString(1, tableName);
+            String tableName = 'U' + uid + "_Receipts";
+            try (PreparedStatement ps = conn.prepareStatement("SELECT merchant, postalCode, addr, categroy, SUM(totalPrice) totalExpense FROM " + tableName + " WHERE datetime_ >= ? GROUP BY merchant;")){
+                ps.setString(1, LocalDateTime.now().minusMonths(1).toString());
                 try (ResultSet rs = ps.executeQuery()){
                     while (rs.next()){
                         merchants.add(extractMerchant(rs));
@@ -347,12 +358,77 @@ public class DBConnector{
      * @throws SQLException
      */
     static MerchantData extractMerchant(ResultSet rs) throws SQLException {
-        MerchantData merchant = new MerchantData(rs.getString("name"),
-                                                rs.getInt("postalcode"),
-                                        rs.getString("address"),
-                                        rs.getString("category"),
-                                        rs.getDouble("totalExpense"));
+        MerchantData merchant = new MerchantData(rs.getString("merchant"),
+                                                rs.getInt("postalCode"),
+                                                rs.getString("addr"),
+                                                rs.getString("category"),
+                                                rs.getDouble("totalExpense"));
         return merchant;
     }
+
+    /**
+     * Retrieves a report from the database for the given time period.
+     * @param uid the user's unique identifier.
+     * @param start The starting datetime to count for the report.
+     * @param end The ending datetime to count for the report.
+     * @return
+     * @throws SQLException
+     */
+    public static ReportData getReport(int uid, LocalDateTime start, LocalDateTime end) throws SQLException{
+        ReportData report = null;
+        Double totalExpenditure = 0.0;
+        try(Connection conn = ds.getConnection()){
+            String tableName = 'U' + uid + "_Receipts";
+            try (PreparedStatement ps = conn.prepareStatement("SELECT SUM(totalPrice) totalExpenditure FROM " + tableName + " WHERE datetime_ >= ? AND datetime_ <= ?;")){
+                ps.setString(1, start.toString());
+                ps.setString(2, end.toString());
+                try (ResultSet rs = ps.executeQuery()){
+                    if (rs.next() == true){
+                        totalExpenditure = rs.getDouble("totalExpenditure");
+                    }
+                }
+            }
+            // TODO: may be should not use arraylist
+            ArrayList<Double> unitExpenses = new ArrayList<>();
+            String condition = "";
+            if (start.getMonthValue() == end.getMonthValue()){ condition  = "GROUP BY DATE(datetime_) ORDER BY DATE(datetime_) ASC";
+            }else{ condition = "GROUP BY MONTH(datetime_) ORDER BY MONTH(datetime_) ASC"; }
+
+            try (PreparedStatement ps = conn.prepareStatement("SELECT SUM(totalPrice) unitExpense FROM " + tableName + " WHERE datetime_ >= ? AND datetime_ <= ? " + condition + ";")){
+                ps.setString(1, start.toString());
+                ps.setString(2, end.toString());
+                try (ResultSet rs = ps.executeQuery()){
+                    while(rs.next()){
+                        unitExpenses.add(rs.getDouble("unitExpense"));
+                    }
+                }
+            }
+
+            HashMap<String, Double> categoricalExpenses = new HashMap<>();
+            try (PreparedStatement ps = conn.prepareStatement("SELECT category, SUM(totalPrice) totalExpense FROM " + tableName + " WHERE datetime_ >= ? AND datetime_ <= ? GROUP BY category")){
+                ps.setString(1, start.toString());
+                ps.setString(2, end.toString());
+                try (ResultSet rs = ps.executeQuery()){
+                    while(rs.next()){
+                        categoricalExpenses.put(rs.getString("category"), rs.getDouble("totalExpense"));
+                    }
+                }
+            }
+            ArrayList<ReceiptData> topReceipts = new ArrayList<>();
+            try (PreparedStatement ps = conn.prepareStatement("SELECT TOP 20 * FROM " + tableName + " WHERE datetime_ >= ? AND datetime_ <= ? ORDER BY totalPrice DESC;")){
+                try (ResultSet rs = ps.executeQuery()){
+                    while(rs.next()){
+                        topReceipts.add(extractReceipt(rs));
+                    }
+                }
+            }
+
+            report = new ReportData(totalExpenditure, unitExpenses, categoricalExpenses, topReceipts);
+        }
+        return report;
+    }
+
+
+
 
 }
