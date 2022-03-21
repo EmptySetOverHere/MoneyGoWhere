@@ -25,7 +25,7 @@ Future<MerchantsModel> makeMerchantsRequest_(
 /// get Latitude and Longitude from google server
 /// [postalCode], 'int' postal of the merchant
 /// returns Latitude and Longitude
-Future<LatLng> getLatLong(int postalCode) async {
+Future<LatLng> getLatLong_(int postalCode) async {
   print("get latitude and longitude from adderss");
   Response r = await get(Uri.parse(Api.POSTALCODETOLATLONG +
       postalCode.toString() +

@@ -1,3 +1,5 @@
+import 'package:google_maps_flutter/google_maps_flutter.dart';
+
 import 'request_utils.dart';
 import '../model/model_utils.dart';
 
@@ -118,5 +120,12 @@ class NetManager {
   /// returns a message from the server.
   Future<String> makeDeleteAccountRequest() async {
     return makeDeleteAccountRequest_(config);
+  }
+
+  /// get Latitude and Longitude from google server
+  /// [postalCode], 'int' postal of the merchant
+  /// returns Latitude and Longitude
+  Future<LatLng> getLatLong(int postalCode) async{
+    return getLatLong_(postalCode);
   }
 }
