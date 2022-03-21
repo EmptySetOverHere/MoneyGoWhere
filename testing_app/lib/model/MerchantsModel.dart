@@ -37,6 +37,7 @@ class MerchantsModel {
     return '{"errorCode": $errorCode,"errorMsg": ${errorMsg != null ? '${json.encode(errorMsg)}' : 'null'},"data":[ $dataString ]}';
   }
 }
+
 /// an entity class that stores attributes of a merchant
 /// [name] name of the merchant, 'String'
 /// [postalCode] postal code of the merchant, 'int'

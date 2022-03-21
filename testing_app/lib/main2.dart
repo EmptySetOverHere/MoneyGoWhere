@@ -41,7 +41,7 @@ class BodyWidget extends StatelessWidget {
                 child: Text('Login'),
                 onPressed: () {
                   Future<UserModel> future =
-                      makeLoginRequest("123456@gg.com", "123456");
+                      makeLoginRequest_("123456@gg.com", "123456");
                   print("login processing...");
                   future.then((value) {
                     print("login successful");
@@ -58,7 +58,7 @@ class BodyWidget extends StatelessWidget {
               RaisedButton(
                 child: Text('Register'),
                 onPressed: () {
-                  Future<String> check = checkEmailRequest("123456@gg.com");
+                  Future<String> check = checkEmailRequest_("123456@gg.com");
                   check.then((value) {
                     print("check email");
                     print(value);
@@ -70,7 +70,7 @@ class BodyWidget extends StatelessWidget {
                   print("here2");
 
                   Future<String> future =
-                      makeRegisterRequest("65448@gg.com", "1234567");
+                      makeRegisterRequest_("65448@gg.com", "1234567");
                   future.then((value) {
                     print("register");
                     print(int.parse("122"));
@@ -93,7 +93,7 @@ class BodyWidget extends StatelessWidget {
                 child: Text('Get default receipts'),
                 onPressed: () {
                   Future<ReceiptsModel> future =
-                      makeReceiptsRequest(headers, null);
+                      makeReceiptsRequest_(headers, null);
                   future.then((value) {
                     print(value.data);
                   }, onError: (e) {
@@ -113,7 +113,7 @@ class BodyWidget extends StatelessWidget {
                       endDate: "27-02-2022");
                   print(filter);
                   Future<ReceiptsModel> future =
-                      makeReceiptsRequest(headers, filter);
+                      makeReceiptsRequest_(headers, filter);
                   future.then((value) {
                     print(value.data);
                   }, onError: (e) {
@@ -125,7 +125,7 @@ class BodyWidget extends StatelessWidget {
                 child: Text('Get merchant'),
                 onPressed: () {
                   Future<MerchantsModel> future =
-                      makeMerchantsRequest(headers, "each");
+                      makeMerchantsRequest_(headers, "each");
                   future.then((value) {
                     print(value.data);
                   }, onError: (e) {
@@ -138,7 +138,7 @@ class BodyWidget extends StatelessWidget {
                 onPressed: () {
                   int year = 2021;
                   Future<ReportModel> future =
-                      makeGetYearReportModelRequest(headers, year);
+                      makeGetYearReportModelRequest_(headers, year);
                   future.then((value) {
                     print(value.data);
                   }, onError: (e) {
@@ -153,7 +153,7 @@ class BodyWidget extends StatelessWidget {
                       '{"errorCode":0, "errorMsg":"error","data":[{"id":"123", "merchant":"Merchant1", "dateTime":"2022-02-28 12:00:03", "totalPrice": 123.56, "category":"food", "content":"nothing"}]}';
                   ReceiptsModel myModel = ReceiptsModel.fromJson(jsonData);
                   print(myModel);
-                  Future<String> future = makeSyncRequest(headers, myModel);
+                  Future<String> future = makeSyncRequest_(headers, myModel);
                   future.then((value) {
                     print("done");
                     print(value);
@@ -169,7 +169,7 @@ class BodyWidget extends StatelessWidget {
                       '{"id":"123", "merchant":"Merchant1", "dateTime":"2022-02-28 12:00:03", "totalPrice": 123.56, "category":"food", "content":"nothing", "index":2}';
                   ReceiptData receipt = ReceiptData.fromJson(jsonData);
                   Future<String> future =
-                      makeDeleteReceiptRequest(headers, receipt);
+                      makeDeleteReceiptRequest_(headers, receipt);
                   future.then((value) {
                     print(value);
                   }, onError: (e) {
@@ -180,7 +180,7 @@ class BodyWidget extends StatelessWidget {
               RaisedButton(
                 child: Text('make delete account request'),
                 onPressed: () {
-                  Future<String> future = makeDeleteAccountRequest(headers);
+                  Future<String> future = makeDeleteAccountRequest_(headers);
                   future.then((value) {
                     print("delete response");
                     print(value);
@@ -193,7 +193,7 @@ class BodyWidget extends StatelessWidget {
                 child: Text('make edit request'),
                 onPressed: () {
                   Future<UserModel> future =
-                      makeEditPhoneNumberRequest(headers, 12365478);
+                      makeEditPhoneNumberRequest_(headers, 12365478);
                   future.then((value) {
                     print("phone number updated");
                     print(value);
@@ -201,7 +201,7 @@ class BodyWidget extends StatelessWidget {
                     print(e);
                   });
                   Future<UserModel> future2 =
-                      makeEditUserNameRequest(headers, "Jane");
+                      makeEditUserNameRequest_(headers, "Jane");
                   future2.then((value) {
                     print("username updated");
                     print(value);
@@ -209,7 +209,7 @@ class BodyWidget extends StatelessWidget {
                     print(e);
                   });
                   Future<UserModel> future3 =
-                      makeEditPasswordRequest(headers, "3399667");
+                      makeEditPasswordRequest_(headers, "3399667");
                   future3.then((value) {
                     print("password updated");
                     print(value);

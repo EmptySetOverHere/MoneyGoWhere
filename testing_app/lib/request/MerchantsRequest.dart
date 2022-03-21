@@ -8,7 +8,7 @@ import 'Api.dart';
 /// no filter is supported for searching merchant.
 /// if [content] is empty, i.e. "", recent merchant would be returned
 /// This function returns [MerchantsModel].
-Future<MerchantsModel> makeMerchantsRequest(
+Future<MerchantsModel> makeMerchantsRequest_(
     Map<String, String> curHeaders, String content) async {
   print("getMerchant");
   Response response =

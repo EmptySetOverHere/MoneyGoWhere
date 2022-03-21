@@ -7,7 +7,7 @@ import 'Api.dart';
 /// [year], 'int'.
 /// [month], 'int'.
 /// This function returns [ReportModel] with [ReportData] as its data.
-Future<ReportModel> makeGetMonthReportModelRequest(
+Future<ReportModel> makeGetMonthReportModelRequest_(
     Map<String, String> curHeaders, int year, int month) async {
   String url = '${Api.REPORTS}?year=$year&month=$month';
   Response response = await get(url, headers: curHeaders);
@@ -24,7 +24,7 @@ Future<ReportModel> makeGetMonthReportModelRequest(
 /// User is identified by "uid" in the [curHeaders].
 /// [year], 'int'.
 /// This function returns [ReportModel] with [ReportData] as its data.
-Future<ReportModel> makeGetYearReportModelRequest(
+Future<ReportModel> makeGetYearReportModelRequest_(
     Map<String, String> curHeaders, int year) async {
   int? month = null;
   String url = '${Api.REPORTS}?year=$year&month=$month';
