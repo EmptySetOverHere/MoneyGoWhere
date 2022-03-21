@@ -2,6 +2,7 @@
 ///if the ip address of the server changes, please update [ROOT]
 class Api {
   static const String ROOT = "http://10.27.80.209:8080";
+
   static const String LOGIN = ROOT + "/login";
   static const String REGISTER = ROOT + "/register";
   static const String CHECKEMAIL = ROOT + "/checkemail";
@@ -13,4 +14,6 @@ class Api {
   static const String DELETEACCOUNT = ROOT + "/deleteaccount";
   static const String DELETERECEIPT = ROOT + "/deletereceipt";
   static const String SYNC = ROOT + "/sync";
+  static const String POSTALCODETOLATLONG =
+      "https://maps.googleapis.com/maps/api/geocode/json?components=country:SG|postal_code:";
 }

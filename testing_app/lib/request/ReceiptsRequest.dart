@@ -14,7 +14,7 @@ Future<ReceiptsModel> makeReceiptsRequest_(
     Map<String, String> curHeaders, SearchFilter? filter) async {
   var jsonData = filter.toString();
   Response response =
-      await post(Api.RECEIPTS, headers: curHeaders, body: jsonData);
+      await post(Uri.parse(Api.RECEIPTS), headers: curHeaders, body: jsonData);
   int statusCode = response.statusCode;
   String jsonString = response.body;
   ReceiptsModel myModel = ReceiptsModel.fromJson(jsonString);
@@ -28,8 +28,9 @@ Future<ReceiptsModel> makeReceiptsRequest_(
 Future<String> makeDeleteReceiptRequest_(
     Map<String, String> curHeaders, ReceiptData receiptData) async {
   var index = receiptData.index;
-  Response response =
-      await delete(Api.DELETERECEIPT + "?index=$index", headers: curHeaders);
+  Response response = await delete(
+      Uri.parse(Api.DELETERECEIPT + "?index=$index"),
+      headers: curHeaders);
   int statusCode = response.statusCode;
   return response.body;
 }
@@ -40,8 +41,8 @@ Future<String> makeDeleteReceiptRequest_(
 /// This functions returns a message from the server.
 Future<String> makeSyncRequest_(
     Map<String, String> curHeaders, ReceiptsModel receiptsModel) async {
-  Response response =
-      await post(Api.SYNC, headers: curHeaders, body: receiptsModel.toString());
+  Response response = await post(Uri.parse(Api.SYNC),
+      headers: curHeaders, body: receiptsModel.toString());
   int statusCode = response.statusCode;
   return response.body;
 }

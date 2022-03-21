@@ -69,7 +69,8 @@ class NetManager {
   /// [year], 'int'.
   /// [month], 'int'.
   /// This function returns [ReportModel] with [ReportData] as its data.
-  Future<ReportModel> makeGetMonthReportModelRequest(int year, int month) async {
+  Future<ReportModel> makeGetMonthReportModelRequest(
+      int year, int month) async {
     return makeGetMonthReportModelRequest_(config, year, month);
   }
 

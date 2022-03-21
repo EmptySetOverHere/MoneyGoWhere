@@ -10,7 +10,7 @@ Future<UserModel> makeGetAccountRequest_(Map<String, String> curHeaders) async {
   var jsonData = json.encode(
       {"email": curHeaders['email'], "password": curHeaders['password']});
   Response response =
-      await post(Api.LOGIN, headers: curHeaders, body: jsonData);
+      await post(Uri.parse(Api.LOGIN), headers: curHeaders, body: jsonData);
   int statusCode = response.statusCode;
   String jsonString = response.body;
   UserModel myModel = UserModel.fromJson(jsonString);
@@ -24,7 +24,7 @@ Future<UserModel> makeEditPhoneNumberRequest_(
     Map<String, String> curHeaders, int newPhoneno) async {
   var jsonData = json.encode({"phoneno": newPhoneno});
   Response response =
-      await patch(Api.ACCOUNT, headers: curHeaders, body: jsonData);
+      await patch(Uri.parse(Api.ACCOUNT), headers: curHeaders, body: jsonData);
   int statusCode = response.statusCode;
   String jsonString = response.body;
   UserModel myModel = UserModel.fromJson(jsonString);
@@ -38,7 +38,7 @@ Future<UserModel> makeEditUserNameRequest_(
     Map<String, String> curHeaders, String newUsername) async {
   var jsonData = json.encode({"username": newUsername});
   Response response =
-      await patch(Api.ACCOUNT, headers: curHeaders, body: jsonData);
+      await patch(Uri.parse(Api.ACCOUNT), headers: curHeaders, body: jsonData);
   int statusCode = response.statusCode;
   String jsonString = response.body;
   UserModel myModel = UserModel.fromJson(jsonString);
@@ -52,7 +52,7 @@ Future<UserModel> makeEditPasswordRequest_(
     Map<String, String> curHeaders, String newPassword) async {
   var jsonData = json.encode({"password": newPassword});
   Response response =
-      await patch(Api.ACCOUNT, headers: curHeaders, body: jsonData);
+      await patch(Uri.parse(Api.ACCOUNT), headers: curHeaders, body: jsonData);
   int statusCode = response.statusCode;
   String jsonString = response.body;
   UserModel myModel = UserModel.fromJson(jsonString);
@@ -62,7 +62,8 @@ Future<UserModel> makeEditPasswordRequest_(
 /// delete current account.
 /// user is identified by "uid" in the [curHeaders].
 Future<String> makeDeleteAccountRequest_(Map<String, String> curHeaders) async {
-  Response response = await delete(Api.DELETEACCOUNT, headers: curHeaders);
+  Response response =
+      await delete(Uri.parse(Api.DELETEACCOUNT), headers: curHeaders);
   int statusCode = response.statusCode;
   return response.body;
 }
