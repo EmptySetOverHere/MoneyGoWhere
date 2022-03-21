@@ -31,7 +31,7 @@ public class DBConnector{
      */
     static final String jdbcUrl = "jdbc:mysql://localhost/cz2006group3?useSSL=false&characterEncoding=utf8";
     /**
-     * database user account contant.
+     * database user account constant.
      */
     static final String jdbcUsername = "cz2006goup3";
     /**
@@ -53,7 +53,7 @@ public class DBConnector{
     /**
      * Disable DBConnector constructor (for Singleton).
      */
-    void DBConnector(){}
+    private DBConnector(){}
 
     /**
      * Performs a selection search according to the input email.
@@ -161,18 +161,34 @@ public class DBConnector{
     }
 
     /**
-     * Modifies the user according to the given UserData object.
+     * Modifies the user according to the given uid with new username
      *
-     * @param user the object that represents the to-be-modified user
+     * @param uid the user's unique identifier
+     * @param username the new username to be updated.
      * @throws SQLException
      */
-    public static void updateUser(UserData user) throws SQLException {
+    public static void updateUser(int uid, String username) throws SQLException {
         try (Connection conn = ds.getConnection()) {
-            try (PreparedStatement ps = conn.prepareStatement("UPDATE users SET username = ?, passowrd = ?, phoneno = ? WHERE uid = ?")) {
-                ps.setString(1, user.getUsername());
-                ps.setString(2, user.getPassword());
-                ps.setInt(3, user.getPhoneno());
-                ps.setInt(4, user.getUID());
+            try (PreparedStatement ps = conn.prepareStatement("UPDATE users SET username = ? WHERE uid = ?")) {
+                ps.setString(1, username);
+                ps.setInt(2, uid);
+                ps.executeUpdate();
+            }
+        }
+    }
+
+    /**
+     * Modifiers the user according to the given uid with new phone number
+     *
+     * @param uid the user's unique identifier
+     * @param phoneno the new phone number to be updated.
+     * @throws SQLException
+     */
+    public static void updateUser(int uid, int phoneno) throws SQLException {
+        try (Connection conn = ds.getConnection()) {
+            try (PreparedStatement ps = conn.prepareStatement("UPDATE users SET phoneno = ? WHERE uid = ?")) {
+                ps.setInt(1, phoneno);
+                ps.setInt(2, uid);
                 ps.executeUpdate();
             }
         }
@@ -328,7 +344,7 @@ public class DBConnector{
     }
 
     /**
-     * Retrieves top 10 merchant from database arranged according to datetime.
+     * Retrieves top merchant from database arranged according to datetime.
      *
      * @param uid the user's unique identifier.
      * @return a list of merchants.
@@ -340,6 +356,31 @@ public class DBConnector{
             String tableName = 'U' + uid + "_Receipts";
             try (PreparedStatement ps = conn.prepareStatement("SELECT merchant, postalCode, addr, categroy, SUM(totalPrice) totalExpense FROM " + tableName + " WHERE datetime_ >= ? GROUP BY merchant;")){
                 ps.setString(1, LocalDateTime.now().minusMonths(1).toString());
+                try (ResultSet rs = ps.executeQuery()){
+                    while (rs.next()){
+                        merchants.add(extractMerchant(rs));
+                    }
+                }
+            }
+        }
+        return merchants;
+    }
+
+    /**
+     * Retrieves requested merchant from database arranged according to datetime.
+     *
+     * @param uid the user's unique identifier
+     * @param merchant the merchant name
+     * @return A list of requested merchants
+     * @throws SQLException
+     */
+    public static ArrayList<MerchantData> getMerchants(int uid, String merchant) throws SQLException {
+        ArrayList<MerchantData> merchants = new ArrayList<>();
+        try(Connection conn = ds.getConnection()){
+            String tableName = 'U' + uid + "_Receipts";
+            try (PreparedStatement ps = conn.prepareStatement("SELECT merchant, postalCode, addr, categroy, SUM(totalPrice) totalExpense FROM " + tableName + " WHERE merchant LIKE %?% AND datetime_ >= ? GROUP BY merchant;")){
+                ps.setString(1, merchant);
+                ps.setString(2, LocalDateTime.now().minusMonths(1).toString());
                 try (ResultSet rs = ps.executeQuery()){
                     while (rs.next()){
                         merchants.add(extractMerchant(rs));
@@ -368,10 +409,11 @@ public class DBConnector{
 
     /**
      * Retrieves a report from the database for the given time period.
-     * @param uid the user's unique identifier.
+     *
+     * @param uid The user's unique identifier.
      * @param start The starting datetime to count for the report.
      * @param end The ending datetime to count for the report.
-     * @return
+     * @return A report object
      * @throws SQLException
      */
     public static ReportData getReport(int uid, LocalDateTime start, LocalDateTime end) throws SQLException{

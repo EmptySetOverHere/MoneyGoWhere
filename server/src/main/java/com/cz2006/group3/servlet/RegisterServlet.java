@@ -33,7 +33,7 @@ public class RegisterServlet extends AbstractServlet {
         }
         resp.setContentType("text/plain");
         PrintWriter pw = resp.getWriter();
-        pw.write(""+uid);
+        pw.write("Register successfully!");
         pw.flush();
         // req.getSession().setAttribute("email", email);
         // resp.sendRedirect("/home");

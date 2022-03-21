@@ -14,7 +14,7 @@ import com.cz2006.group3.bean.UserData;
 import com.cz2006.group3.bean.UserModel;
 
 /**
- * This class handles POST request from the client side who is requesting for loggin in.
+ * This class handles POST request from the client side who is requesting for logging in.
  */
 @WebServlet(urlPatterns = "/login")
 public class LogInServlet extends AbstractServlet{
@@ -33,6 +33,7 @@ public class LogInServlet extends AbstractServlet{
         }
 
         String expectedPassword = matchedUser.getPassword();
+
         if (expectedPassword != null && expectedPassword.equals(password)) {
             // req.getSession().setAttribute("email", matchedUser.getEmail());
             // req.getSession().setAttribute("id", matchedUser.getUID());

@@ -29,7 +29,7 @@ public class SyncServlet extends AbstractServlet{
             e.printStackTrace();
         }
         PrintWriter pw = resp.getWriter();
-        pw.write("Sync successfully!");
+        pw.write("Saved!");
         pw.flush();
     }
 }
