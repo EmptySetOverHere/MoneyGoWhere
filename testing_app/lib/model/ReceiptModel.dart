@@ -51,6 +51,7 @@ class ReceiptsModel {
 class ReceiptData {
   String? id;
   String? merchant;
+  int? postalCode;
   String? dateTime;
   double? totalPrice;
   String? category;
@@ -61,6 +62,7 @@ class ReceiptData {
   ReceiptData.fromParams(
       {this.id,
       this.merchant,
+      this.postalCode,
       this.dateTime,
       this.totalPrice,
       this.category,
@@ -74,6 +76,7 @@ class ReceiptData {
     }
     id = jsonRes['id'];
     merchant = jsonRes['merchant'];
+    postalCode = jsonRes['postalCode'];
     dateTime = jsonRes['dateTime'];
     totalPrice = jsonRes['totalPrice'];
     category = jsonRes['category'];
@@ -84,7 +87,7 @@ class ReceiptData {
   /// convert to json String
   @override
   String toString() {
-    return '{"id": "$id", "merchant": ${merchant != null ? '${json.encode(merchant)}' : 'null'},"dateTime": ${dateTime != null ? '${json.encode(dateTime)}' : 'null'},"totalPrice": $totalPrice, "category": ${category != null ? '${json.encode(category)}' : 'null'},"content": ${content != null ? '${json.encode(content)}' : 'null'}, "index": "$index"}';
+    return '{"id": "$id", "merchant": ${merchant != null ? '${json.encode(merchant)}' : 'null'},"postalCode": "$postalCode","dateTime": ${dateTime != null ? '${json.encode(dateTime)}' : 'null'},"totalPrice": $totalPrice, "category": ${category != null ? '${json.encode(category)}' : 'null'},"content": ${content != null ? '${json.encode(content)}' : 'null'}, "index": "$index"}';
   }
 }
 
