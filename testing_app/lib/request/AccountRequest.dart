@@ -61,9 +61,9 @@ Future<UserModel> makeEditPasswordRequest_(
 
 /// delete current account.
 /// user is identified by "uid" in the [curHeaders].
-Future<String> makeDeleteAccountRequest_(Map<String, String> curHeaders) async {
+Future<MessageModel> makeDeleteAccountRequest_(Map<String, String> curHeaders) async {
   Response response =
       await delete(Uri.parse(Api.DELETEACCOUNT), headers: curHeaders);
   int statusCode = response.statusCode;
-  return response.body;
+  return MessageModel.fromJson(response.body);
 }

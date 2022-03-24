@@ -26,13 +26,13 @@ class NetManager {
     return future;
   }
 
-  Future<String> makeRegisterRequest(String email, String password) async {
+  Future<MessageModel> makeRegisterRequest(String email, String password) async {
     return makeRegisterRequest_(email, password);
   }
 
   /// check if the current email has been registered.
   /// this request should be called when the user changes the content in the email bar
-  Future<String> checkEmailRequest(String email) async {
+  Future<MessageModel> checkEmailRequest(String email) async {
     return checkEmailRequest_(email);
   }
 
@@ -56,14 +56,14 @@ class NetManager {
   /// make delete receipt request
   /// Receipt is identified by "uid" + index.
   /// This functions returns a message from the server.
-  Future<String> makeDeleteReceiptRequest(ReceiptData receiptData) async {
+  Future<MessageModel> makeDeleteReceiptRequest(ReceiptData receiptData) async {
     return makeDeleteReceiptRequest_(config, receiptData);
   }
 
   /// upload local copy of receipts to the server.
   /// [receiptsModel] is [ReceiptsModel] which stores list of [ReceiptData] in its data.
   /// This functions returns a message from the server.
-  Future<String> makeSyncRequest(ReceiptsModel receiptsModel) async {
+  Future<MessageModel> makeSyncRequest(ReceiptsModel receiptsModel) async {
     return makeSyncRequest_(config, receiptsModel);
   }
 
@@ -118,7 +118,7 @@ class NetManager {
 
   /// delete current account.
   /// returns a message from the server.
-  Future<String> makeDeleteAccountRequest() async {
+  Future<MessageModel> makeDeleteAccountRequest() async {
     return makeDeleteAccountRequest_(config);
   }
 

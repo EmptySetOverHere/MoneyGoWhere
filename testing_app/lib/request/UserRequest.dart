@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:http/http.dart';
 import '../model/UserModel.dart';
+import '../model/MessageModel.dart';
 
 import 'Api.dart';
 
@@ -22,21 +23,21 @@ Future<UserModel> makeLoginRequest_(String email, String password) async {
 /// [email], email of the user.
 /// [password], password of the user.
 /// no matter register successful or unsuccessful, returns a message from the server
-Future<String> makeRegisterRequest_(String email, String password) async {
+Future<MessageModel> makeRegisterRequest_(String email, String password) async {
   var jsonData = json.encode({"email": email, "password": password});
   Response response =
       await post(Uri.parse(Api.REGISTER), headers: config, body: jsonData);
-  return response.body;
+  return MessageModel.fromJson(response);
 }
 
 /// check if the current email has been registered.
 /// this request should be called when the user changes the content in the email bar
-Future<String> checkEmailRequest_(String email) async {
+Future<MessageModel> checkEmailRequest_(String email) async {
   var jsonData = json.encode({"email": email});
   // print("check email:" + email);
   Response response =
       await post(Uri.parse(Api.CHECKEMAIL), headers: config, body: jsonData);
-  return response.body;
+  return MessageModel.fromJson(response.body);
 }
 
 /// sign out

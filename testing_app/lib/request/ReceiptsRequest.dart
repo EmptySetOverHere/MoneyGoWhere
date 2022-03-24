@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:http/http.dart';
+import 'package:testing_app/model/MessageModel.dart';
 import '../model/ReceiptModel.dart';
 
 import 'Api.dart';
@@ -25,24 +26,24 @@ Future<ReceiptsModel> makeReceiptsRequest_(
 /// User is identified by "uid" in the [curHeaders].
 /// Receipt is identified by "uid" + index.
 /// This functions returns a message from the server.
-Future<String> makeDeleteReceiptRequest_(
+Future<MessageModel> makeDeleteReceiptRequest_(
     Map<String, String> curHeaders, ReceiptData receiptData) async {
   var index = receiptData.index;
   Response response = await delete(
       Uri.parse(Api.DELETERECEIPT + "?index=$index"),
       headers: curHeaders);
   int statusCode = response.statusCode;
-  return response.body;
+  return MessageModel.fromJson(response.body);
 }
 
 /// upload local copy of receipts to the server.
 /// User is identified by "uid" in the [curHeaders].
 /// [receiptsModel] is [ReceiptsModel] which stores list of [ReceiptData] in its data.
 /// This functions returns a message from the server.
-Future<String> makeSyncRequest_(
+Future<MessageModel> makeSyncRequest_(
     Map<String, String> curHeaders, ReceiptsModel receiptsModel) async {
   Response response = await post(Uri.parse(Api.SYNC),
       headers: curHeaders, body: receiptsModel.toString());
   int statusCode = response.statusCode;
-  return response.body;
+  return MessageModel.fromJson(response.body);
 }
