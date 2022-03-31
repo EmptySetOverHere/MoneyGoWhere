@@ -10,6 +10,7 @@ import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.UUID;
 
 
 /**
@@ -29,18 +30,20 @@ public class DBConnector{
     /**
      * database url constant.
      */
-    static final String jdbcUrl = "jdbc:mysql://localhost/cz2006group3?useSSL=false&characterEncoding=utf8";
+    static final String jdbcUrl = "jdbc:mysql://119.13.107.101/cz2006group3?useSSL=false&characterEncoding=utf8";
     /**
      * database user account constant.
      */
-    static final String jdbcUsername = "cz2006goup3";
+    static final String jdbcUsername = "root";
     /**
      * database account password
      */
-    static final String jdbcPassword = "cz2006group3";
+    static final String jdbcPassword = "cz2006group3!";
+
+
 
     static{
-        System.out.println("Initiating Connection to MySQL...");
+        System.out.println("connecting to Mysql server database...");
         config.setJdbcUrl(jdbcUrl);
         config.setUsername(jdbcUsername);
         config.setPassword(jdbcPassword);
@@ -128,12 +131,13 @@ public class DBConnector{
     public static int CreateUser(String email, String password) throws SQLException{
         System.out.println("Creating new user in the database...");
         int uid = -1;
+        String random_username = UUID.randomUUID().toString();
         try (Connection conn = ds.getConnection()){
             try (PreparedStatement ps = conn.prepareStatement(
                     " INSERT INTO users (email, password, username, phoneno) VALUES (?, ?, ?, ?);")){
                 ps.setString(1, email);
                 ps.setString(2, password);
-                ps.setString(3, "vaoergbof1adjsif");
+                ps.setString(3, random_username);
                 ps.setInt(4, 0);
                 ps.executeUpdate();
             }
@@ -148,12 +152,12 @@ public class DBConnector{
                 }
             }
 
-            System.out.println(uid);
+            System.out.println("Initializing user-specific receipt table for user "+uid+" ...");
             // create receipt table for each newly create user
-            String tableName = 'U' + uid + "_Receipts";
+            String tableName = "U" + uid + "_Receipts";
             try (PreparedStatement ps = conn.prepareStatement(
-                    " CREATE TABLE " + tableName + " (rindex INT NOT NULL AUTO_INCREMENT, rid VARCHAR(100), merchant VARCHAR(100), postalCode INT," +
-                            " datetime_ TIMESTAMP, totalPrice DOUBLE, category VARCHAR(20), content VARCHAR(10000), PRIMARY KEY (index));")){
+                    " CREATE TABLE " + tableName + " ( rindex BIGINT NOT NULL AUTO_INCREMENT, rid VARCHAR(100), merchant VARCHAR(100), postalCode INT," +
+                            " datetime_ TIMESTAMP, totalPrice DOUBLE, category VARCHAR(20), content VARCHAR(10000), PRIMARY KEY (rindex));")){
                 ps.executeUpdate();
             }
         }

@@ -8,6 +8,7 @@ import org.apache.catalina.startup.Tomcat;
 import org.apache.catalina.webresources.DirResourceSet;
 import org.apache.catalina.webresources.StandardRoot;
 
+
 /**
  * The program entry point.
  */
@@ -15,7 +16,7 @@ public class Main {
 
 	public static void main(String[] args) throws Exception {
 		Tomcat tomcat = new Tomcat();
-		tomcat.setPort(Integer.getInteger("port", 8080));
+		tomcat.setPort(Integer.getInteger("port", 8085));
 		tomcat.getConnector();
 		Context ctx = tomcat.addWebapp("", new File("src/main/webapp").getAbsolutePath());
 		WebResourceRoot resources = new StandardRoot(ctx);

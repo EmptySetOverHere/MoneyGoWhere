@@ -7,10 +7,10 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.SQLException;
-import java.util.List;
+
+
 import org.json.JSONObject;
 
-import com.cz2006.group3.bean.UserData;
 import com.cz2006.group3.bean.DBConnector;
 
 
@@ -21,10 +21,9 @@ import com.cz2006.group3.bean.DBConnector;
  */
 @WebServlet(urlPatterns = "/checkemail")
 public class CheckEmailServlet extends AbstractServlet{
+
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        System.out.println("user is checking....");
-        // BufferedReader reader = req.getReader();
-        // System.out.println(reader.readLine());
+        System.out.println("User is checking email");
         JSONObject json = new JSONObject(req.getReader().readLine());
         String email = (String)json.get("email");
         System.out.println(email);
@@ -36,12 +35,16 @@ public class CheckEmailServlet extends AbstractServlet{
         }
         resp.setCharacterEncoding("UTF-8");
         PrintWriter pw = resp.getWriter();
+        String errorMsg;
+        int errorCode = -1;
+
         if (exist == true) {
-            pw.write("This email is already used!");
-            pw.flush();
+            errorMsg = "This email has already been used!";
         }else{
-            pw.write("OK.");
-            pw.flush();
+            errorMsg = "OK.";
+            errorCode = 0;
         }
+        pw.write("{\"errorCode\":" + errorCode + ",\"errorMsg\":\"" + errorMsg + "\"}");
+        pw.flush();
     }
 }

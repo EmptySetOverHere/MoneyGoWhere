@@ -4,16 +4,15 @@ import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.HashMap;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import com.cz2006.group3.bean.*;
+
 
 
 /**
@@ -21,6 +20,7 @@ import com.cz2006.group3.bean.*;
  */
 @WebServlet(urlPatterns = "/report")
 public class ReportServlet extends AbstractServlet {
+    // private final Logger logger = LogManager.getLogger(this.getClass());
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 //        ArrayList<Double> unitExp = new ArrayList<>(); unitExp.add(1.00); unitExp.add(2.00);
@@ -34,23 +34,29 @@ public class ReportServlet extends AbstractServlet {
         Integer month = Integer.parseInt(req.getParameter("month"));
         LocalDateTime start, end;
         if (month == null){
+            System.out.println("User " + uid + "resquests for " + year + " report");
             start = LocalDateTime.of(year, 1, 1, 0, 0, 0);
             end = start.plusYears(1);
         }else{
+            System.out.println("User " + uid + "resquests for " + month + "/" + year+" report");
             start = LocalDateTime.of(year, month, 1, 0, 0, 0);
             end = start.plusMonths(1);
         }
         ReportData r = null;
+        int errorCode = -1;
+        String errorMsg = "";
         try {
             r = DBConnector.getReport(uid, start, end);
+            errorCode = 0;
         }catch (SQLException e){
+            errorMsg += "Getting Report Failed";
             e.printStackTrace();
         }
 
         resp.setContentType("application/json");
         resp.setCharacterEncoding("UTF-8");
         PrintWriter pw = resp.getWriter();
-        pw.write(new ReportModel(-1, "", r).toString());
+        pw.write(new ReportModel(errorCode, errorMsg, r).toString());
         pw.flush();
     }
 

@@ -1,6 +1,8 @@
 package com.cz2006.group3.servlet;
 
 import com.cz2006.group3.bean.DBConnector;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.json.JSONObject;
 
 import javax.servlet.ServletException;
@@ -15,11 +17,12 @@ import java.sql.SQLException;
  */
 @WebServlet(urlPatterns = "/deletereceipt")
 public class DeleteReceiptsServlet extends AbstractServlet {
+    // private final Logger logger = LogManager.getLogger(this.getClass());
     @Override
     protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         int uid = req.getIntHeader("uid");
         int rindex = Integer.parseInt(req.getParameter("index"));
-        System.out.println(rindex);
+        System.out.println("User "+ uid +" requests for deleting receipt " + rindex);
         // TODO:
         try {
             DBConnector.deleteReceipt(uid, rindex);

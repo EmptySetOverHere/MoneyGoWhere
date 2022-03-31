@@ -20,12 +20,12 @@ import org.json.JSONObject;
  */
 @WebServlet(urlPatterns = "/receipts")
 public class ReceiptServlet extends AbstractServlet {
+
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException{
-        int uid = req.getIntHeader("uid");
-        System.out.println("user " + uid + " is requesting receipts");
+        int uid = Integer.parseInt(req.getHeader("uid"));
+        System.out.println("User " + uid + "requests for receipts");
         String query = req.getReader().readLine();
-        System.out.println(query);
         SearchFilter criteria = new SearchFilter(new JSONObject(query));
         ArrayList<ReceiptData> receipts = null;
         int errorCode = 0;
