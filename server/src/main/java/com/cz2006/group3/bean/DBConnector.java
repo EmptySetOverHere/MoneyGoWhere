@@ -206,7 +206,7 @@ public class DBConnector{
      */
     public static void DeleteUser(int uid) throws SQLException{
         try (Connection conn = ds.getConnection()) {
-            String tableName = 'U'+uid+"_Receipts";
+            String tableName = "U" + uid + "_Receipts";
             try (PreparedStatement ps = conn.prepareStatement("DELETE FROM users WHERE uid = ?")) {
                 ps.setInt(1, uid);
                 ps.executeUpdate();
@@ -227,14 +227,17 @@ public class DBConnector{
     public static ArrayList<ReceiptData> getReceiptsDefault(int uid) throws SQLException {
         ArrayList<ReceiptData> receipts = new ArrayList<>();
         try(Connection conn = ds.getConnection()){
-            String tableName = 'U' + uid + "_Receipts";
-            try (PreparedStatement ps = conn.prepareStatement("SELECT TOP 20 * FROM "+tableName+" ORDER BY datetime_ DESC;")){
+            String tableName = "U" + uid + "_Receipts";
+            try (PreparedStatement ps = conn.prepareStatement("SELECT * FROM "+tableName+" ORDER BY datetime_ DESC;")){
                 try (ResultSet rs = ps.executeQuery()){
                     while (rs.next()){
                         receipts.add(extractReceipt(rs));
                     }
                 }
             }
+        }
+        for (int i =0 ; i< receipts.size(); i++){
+            System.out.println(receipts.get(i).toString());
         }
         return receipts;
     }
@@ -261,7 +264,7 @@ public class DBConnector{
         }
         ArrayList<ReceiptData> receipts = new ArrayList<>();
         try(Connection conn = ds.getConnection()){
-            String tableName = 'U' +uid +"_Receipts";
+            String tableName = "U" +uid +"_Receipts";
             try (PreparedStatement ps = conn.prepareStatement("SELECT * FROM " + tableName +
                     "WHERE " + condition +
                     "ORDER BY dateTime DESC;")){
@@ -291,7 +294,7 @@ public class DBConnector{
      */
     public static void putReceipts(int uid, JSONArray receipts) throws SQLException {
         // DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-        String tableName = 'U' + uid + "_Receipts";
+        String tableName = "U" + uid + "_Receipts";
         try(Connection conn = ds.getConnection()) {
             for (int i = 0; i<receipts.length(); i++){
                 JSONObject r = (JSONObject) receipts.get(i);
@@ -320,7 +323,7 @@ public class DBConnector{
      */
     public static void deleteReceipt(int uid, int rindex) throws SQLException {
         try (Connection conn = ds.getConnection()){
-            String tableName = 'U' + uid + "_Receipts";
+            String tableName = "U" + uid + "_Receipts";
             try (PreparedStatement ps = conn.prepareStatement("DELETE FROM " + tableName + " WHERE rindex = ?;")){
                 ps.setInt(1, rindex);
                 ps.executeUpdate();
@@ -421,10 +424,10 @@ public class DBConnector{
      * @throws SQLException
      */
     public static ReportData getReport(int uid, LocalDateTime start, LocalDateTime end) throws SQLException{
-        ReportData report = null;
+        ReportData report;
         Double totalExpenditure = 0.0;
         try(Connection conn = ds.getConnection()){
-            String tableName = 'U' + uid + "_Receipts";
+            String tableName = "U" + uid + "_Receipts";
             try (PreparedStatement ps = conn.prepareStatement("SELECT SUM(totalPrice) totalExpenditure FROM " + tableName + " WHERE datetime_ >= ? AND datetime_ <= ?;")){
                 ps.setString(1, start.toString());
                 ps.setString(2, end.toString());
@@ -461,14 +464,13 @@ public class DBConnector{
                 }
             }
             ArrayList<ReceiptData> topReceipts = new ArrayList<>();
-            try (PreparedStatement ps = conn.prepareStatement("SELECT TOP 20 * FROM " + tableName + " WHERE datetime_ >= ? AND datetime_ <= ? ORDER BY totalPrice DESC;")){
+            try (PreparedStatement ps = conn.prepareStatement("SELECT * FROM " + tableName + " WHERE datetime_ >= ? AND datetime_ <= ? ORDER BY totalPrice DESC;")){
                 try (ResultSet rs = ps.executeQuery()){
                     while(rs.next()){
                         topReceipts.add(extractReceipt(rs));
                     }
                 }
             }
-
             report = new ReportData(totalExpenditure, unitExpenses, categoricalExpenses, topReceipts);
         }
         return report;

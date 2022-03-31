@@ -1,8 +1,6 @@
 package com.cz2006.group3.servlet;
 
 import com.cz2006.group3.bean.DBConnector;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -17,11 +15,11 @@ import java.sql.SQLException;
  */
 @WebServlet(urlPatterns = "/deleteaccount")
 public class DeleteAccountServlet extends AbstractServlet {
-    private final Logger logger = LogManager.getLogger(this.getClass());
+    // private final Logger logger = LogManager.getLogger(this.getClass());
     @Override
     protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         int uid = req.getIntHeader("uid");
-        logger.info("User " + uid + "requests for deleting account");
+        System.out.println("User " + uid + "requests for deleting account");
         try {
             DBConnector.DeleteUser(uid);
         }catch (SQLException e){

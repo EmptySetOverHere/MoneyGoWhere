@@ -24,27 +24,28 @@ public class ReceiptServlet extends AbstractServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException{
         int uid = Integer.parseInt(req.getHeader("uid"));
-        System.out.println("User " + uid + "requests for receipts");
+        System.out.println("User " + uid + " requests for receipts");
         String query = req.getReader().readLine();
+        System.out.println(query);
         SearchFilter criteria = new SearchFilter(new JSONObject(query));
         ArrayList<ReceiptData> receipts = null;
         int errorCode = 0;
         String errorMsg = "";
-        if (query == null){
+        if (criteria.isNull()){
             try {
                 receipts = DBConnector.getReceiptsDefault(uid);
             }catch (SQLException e) {
-                e.printStackTrace();
                 errorCode = -1;
                 errorMsg = "request unsuccessful";
+                e.printStackTrace();
             }
         }else{
             try {
                 receipts = DBConnector.getReceipts(uid, criteria);
             }catch (SQLException e) {
-                e.printStackTrace();
                 errorCode = -1;
                 errorMsg = "request unsuccessful";
+                e.printStackTrace();
             }
         }
         resp.setContentType("application/json");

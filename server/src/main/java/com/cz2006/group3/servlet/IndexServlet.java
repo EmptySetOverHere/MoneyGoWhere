@@ -12,8 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 import com.cz2006.group3.bean.DBConnector;
 import com.cz2006.group3.bean.ReceiptData;
 import com.cz2006.group3.bean.ReceiptsModel;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+
 
 /**
  * This is the default home route.

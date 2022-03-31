@@ -12,8 +12,6 @@ import java.util.ArrayList;
 import com.cz2006.group3.bean.DBConnector;
 import com.cz2006.group3.bean.MerchantData;
 import com.cz2006.group3.bean.MerchantsModel;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 
 /**
@@ -21,7 +19,6 @@ import org.apache.logging.log4j.Logger;
  */
 @WebServlet(urlPatterns = "/merchant")
 public class MerchantServlet extends AbstractServlet {
-    // private final Logger logger = LogManager.getLogger(this.getClass());
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         System.out.println(req.getQueryString());

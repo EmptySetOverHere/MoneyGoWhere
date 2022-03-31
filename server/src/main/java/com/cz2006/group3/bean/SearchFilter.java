@@ -11,6 +11,8 @@ import java.util.ArrayList;
  * that contains the filtering criteria made by user.
  */
 public class SearchFilter {
+
+    boolean isnull;
     /**
      *  Search keyword
      */
@@ -41,17 +43,45 @@ public class SearchFilter {
      * @param jsonQuery a query string represents the search criteria.
      */
     public SearchFilter(JSONObject jsonQuery){
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
-        this.category = new ArrayList<>();
-        this.content = jsonQuery.getString("content");
-        JSONArray jsonArr = jsonQuery.getJSONArray("category");
-        for (int i = 0; i< jsonArr.length(); i++){
-            category.add(jsonArr.getString(i));
-        }
-        this.priceLower = jsonQuery.getDouble("priceLower");
-        this.priceUpper = jsonQuery.getDouble("priceUpper");
-        this.startDate = LocalDate.parse(jsonQuery.getString("startDate"), formatter);
-        this.endDate = LocalDate.parse(jsonQuery.getString("endDate"), formatter);
+            isnull = true;
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+
+            if (!jsonQuery.isNull("content")) {
+
+                this.content = jsonQuery.getString("content");
+                isnull = false;
+            }
+            else this.content = "";
+
+            this.category = new ArrayList<>();
+            JSONArray jsonArr = jsonQuery.getJSONArray("category");
+            if (jsonArr.length()>0) {
+                for (int i = 0; i < jsonArr.length(); i++) {
+                    category.add(jsonArr.getString(i));
+                }
+                isnull = false;
+            }
+
+            if (!jsonQuery.isNull("priceLower")) {
+                this.priceLower = jsonQuery.getDouble("priceLower");
+                isnull = false;
+            }
+            else this.priceLower = -1.0;
+            if (!jsonQuery.isNull("priceUpper")){
+                this.priceUpper = jsonQuery.getDouble("priceUpper");
+                isnull = false;
+            }
+            else this.priceUpper = -1.0;
+            if (!jsonQuery.isNull("startDate")){
+                this.startDate = LocalDate.parse(jsonQuery.getString("startDate"), formatter);
+                isnull = false;
+            }
+            if (!jsonQuery.isNull("endDate")) {
+
+                this.endDate = LocalDate.parse(jsonQuery.getString("endDate"), formatter);
+                isnull = false;
+            }
+            System.out.println("isnull = "+isnull);
     }
 
     /**
@@ -79,5 +109,10 @@ public class SearchFilter {
      * @return the end date field of a search filter.
      */
     public LocalDate getEndDate() {return endDate;}
+
+    /**
+     * @return true if the search filter is null else false.
+     */
+    public boolean isNull(){return isnull;}
 
 }

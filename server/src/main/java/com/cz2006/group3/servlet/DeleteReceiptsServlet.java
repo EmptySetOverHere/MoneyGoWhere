@@ -1,8 +1,7 @@
 package com.cz2006.group3.servlet;
 
 import com.cz2006.group3.bean.DBConnector;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+
 import org.json.JSONObject;
 
 import javax.servlet.ServletException;

@@ -8,8 +8,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.json.JSONObject;
 
 import com.cz2006.group3.bean.DBConnector;
@@ -25,6 +23,7 @@ public class LogInServlet extends AbstractServlet{
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         JSONObject json = new JSONObject(req.getReader().readLine());
+        System.out.println(json);
         String email = json.getString("email");
         String password = json.getString("password");
         System.out.println("User "+ email + " is loggining in");
