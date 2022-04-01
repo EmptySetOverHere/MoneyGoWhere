@@ -36,6 +36,13 @@ public class MerchantData {
         this.totalExpense = totalExpense;
     }
 
+    public String getName(){
+        return this.name;
+    }
+    public void setPostalCode(int postalCode) {this.postalCode = postalCode;}
+    public void setAddress(String address) {this.address = address;}
+    public void setCategory(String category) {this.category = category;}
+
     /**
      * Method to convert a merchant object to a JSON String.
      *

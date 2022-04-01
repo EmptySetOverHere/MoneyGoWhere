@@ -1,6 +1,7 @@
 package com.cz2006.group3.bean;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 
 /**
  * Receipt object represents individual receipt entity.
@@ -18,6 +19,8 @@ public class ReceiptData{
      * The name of the merchant.
      */
     String merchant;
+
+    String address;
     /**
      * The postal code of the merchant.
      */
@@ -39,19 +42,23 @@ public class ReceiptData{
      */
     String content;
 
+    ArrayList<ProductData> products;
+
     /**
      * Receipt Constructor.
      */
-    public ReceiptData(int index, String id, String merchant, int postalCode, LocalDateTime dateTime,
-                       double totalPrice, String category, String content) {
+    public ReceiptData(int index, String id, String merchant, String address, int postalCode, LocalDateTime dateTime,
+                       double totalPrice, String category,ArrayList<ProductData> products, String content) {
         this.index = index;
         this.id = id;
         this.merchant = merchant;
+        this.address = address;
         this.postalCode = postalCode;
         this.dateTime = dateTime;
         this.totalPrice = totalPrice;
         this.category = category;
         this.content = content;
+        this.products = products;
     }
 
     /**
@@ -64,10 +71,13 @@ public class ReceiptData{
         return "{ \"index\":" + index
                 + ",\"id\":" + "\""+ id + "\""
                 + ",\"merchant\":" + "\"" + merchant +"\""
+                + ",\"address\":" + "\"" + address +"\""
                 + ",\"postalCode\":" + postalCode
                 + ",\"dateTime\":" + "\"" + dateTime.toString()
                 + "\",\"totalPrice\":" + totalPrice
                 + ",\"category\":" + "\"" + category + "\""
-                + ",\"content\":" + "\"" + content + "\"}";
+                + ",\"content\":" + "\""
+                +",\"products\":" + products.toString()
+                + "\"}";
     }
 }

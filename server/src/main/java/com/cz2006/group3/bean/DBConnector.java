@@ -3,10 +3,8 @@ package com.cz2006.group3.bean;
 import com.zaxxer.hikari.*;
 import org.json.JSONArray;
 import org.json.JSONObject;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+
+import java.sql.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -156,8 +154,8 @@ public class DBConnector{
             // create receipt table for each newly create user
             String tableName = "U" + uid + "_Receipts";
             try (PreparedStatement ps = conn.prepareStatement(
-                    " CREATE TABLE " + tableName + " ( rindex BIGINT NOT NULL AUTO_INCREMENT, rid VARCHAR(100), merchant VARCHAR(100), postalCode INT," +
-                            " datetime_ TIMESTAMP, totalPrice DOUBLE, category VARCHAR(20), content VARCHAR(10000), PRIMARY KEY (rindex));")){
+                    " CREATE TABLE " + tableName + " ( rindex BIGINT NOT NULL AUTO_INCREMENT, rid VARCHAR(100), merchant VARCHAR(100), address VARCHAR(100), postalCode INT," +
+                            " datetime_ TIMESTAMP, totalPrice DOUBLE, category VARCHAR(20), content VARCHAR(255), products LONGTEXT ,PRIMARY KEY (rindex));")){
                 ps.executeUpdate();
             }
         }
@@ -252,7 +250,7 @@ public class DBConnector{
      */
     public static ArrayList<ReceiptData> getReceipts(int uid, SearchFilter criteria) throws SQLException {
         String condition = ""; ArrayList<String> categories = null;
-        if (criteria.getContent()!=null){ condition += "content LIKE ? AND "; }
+        if (criteria.getContent()!=null){ condition += "products LIKE ? AND "; }
         if (criteria.getCategory() != null){ categories = criteria.getCategory(); for (int i = 0; i<categories.size(); i++) { condition += "categeory = ? AND "; } }
         if (criteria.getStartDate() != null){ condition += "DATE(datetime_) >= ? AND "; }
         if (criteria.getEndDate() != null){ condition += "DATE(datetime_) <= ? AND "; }
@@ -299,15 +297,17 @@ public class DBConnector{
             for (int i = 0; i<receipts.length(); i++){
                 JSONObject r = (JSONObject) receipts.get(i);
                 try (PreparedStatement ps = conn.prepareStatement("INSERT INTO " + tableName +
-                        " (rid, merchant, postalCode, datetime_, totalPrice, category, content)" +
-                        " VALUES (?, ?, ?, ?, ?, ? )")){
+                        " (rid, merchant,address, postalCode, datetime_, totalPrice, category, content, products)" +
+                        " VALUES (?, ?, ?, ?, ?, ?, ?, ? )")){
                     ps.setString(1, r.getString("id"));
                     ps.setString(2, r.getString("merchant"));
-                    ps.setInt(3, r.getInt("postalCode"));
-                    ps.setString(4, r.getString("datetime_"));
-                    ps.setDouble(5, r.getDouble("totalPrice"));
-                    ps.setString(6, r.getString("category"));
-                    ps.setString(7, r.getString("content"));
+                    ps.setString(3, r.getString("address"));
+                    ps.setInt(4, r.getInt("postalCode"));
+                    ps.setString(5, r.getString("datetime_"));
+                    ps.setDouble(6, r.getDouble("totalPrice"));
+                    ps.setString(7, r.getString("category"));
+                    ps.setString(8, r.getString("content"));
+                    ps.setString(9, r.getString("products"));
                     ps.executeUpdate();
                 }
             }
@@ -339,16 +339,24 @@ public class DBConnector{
      * @throws SQLException
      */
     static ReceiptData extractReceipt(ResultSet rs) throws SQLException{
+        ArrayList<ProductData> products = new ArrayList<>();
+        JSONArray jsonProducts = new JSONArray(rs.getString("products"));
+        for (int i =0; i<jsonProducts.length(); i++){
+            products.add(new ProductData(new JSONObject(jsonProducts.getString(i))));
+        }
         ReceiptData receipt = new ReceiptData(rs.getInt("rindex"),
                                     rs.getString("rid"),
                                     rs.getString("merchant"),
+                                    rs.getString("address"),
                                     rs.getInt("postalCode"),
                                     rs.getTimestamp("datetime_").toLocalDateTime(),
                                     rs.getDouble("totalPrice"),
                                     rs.getString("category"),
+                                    products,
                                     rs.getString("content"));
         return receipt;
     }
+
 
     /**
      * Retrieves top merchant from database arranged according to datetime.
@@ -360,12 +368,24 @@ public class DBConnector{
     public static ArrayList<MerchantData> getMerchantsDefault(int uid) throws SQLException {
         ArrayList<MerchantData> merchants = new ArrayList<>();
         try(Connection conn = ds.getConnection()){
-            String tableName = 'U' + uid + "_Receipts";
-            try (PreparedStatement ps = conn.prepareStatement("SELECT merchant, postalCode, addr, categroy, SUM(totalPrice) totalExpense FROM " + tableName + " WHERE datetime_ >= ? GROUP BY merchant;")){
+            String tableName = "U" + uid + "_Receipts";
+            try (PreparedStatement ps = conn.prepareStatement("SELECT merchant, SUM(totalPrice) totalExpense FROM " + tableName + " WHERE datetime_ >= ? GROUP BY merchant;")){
                 ps.setString(1, LocalDateTime.now().minusMonths(1).toString());
                 try (ResultSet rs = ps.executeQuery()){
                     while (rs.next()){
                         merchants.add(extractMerchant(rs));
+                    }
+                }
+            }
+            for (MerchantData m: merchants) {
+                try (PreparedStatement ps = conn.prepareStatement("SELECT address, postalCode, category FROM " + tableName + " WHERE merchant=?")) {
+                    ps.setString(1, m.getName());
+                    try(ResultSet rs = ps.executeQuery()){
+                        if(rs.next()){
+                            m.setAddress(rs.getString("address"));
+                            m.setPostalCode(rs.getInt("postalCode"));
+                            m.setCategory(rs.getString("category"));
+                        }
                     }
                 }
             }
@@ -385,12 +405,24 @@ public class DBConnector{
         ArrayList<MerchantData> merchants = new ArrayList<>();
         try(Connection conn = ds.getConnection()){
             String tableName = 'U' + uid + "_Receipts";
-            try (PreparedStatement ps = conn.prepareStatement("SELECT merchant, postalCode, addr, categroy, SUM(totalPrice) totalExpense FROM " + tableName + " WHERE merchant LIKE %?% AND datetime_ >= ? GROUP BY merchant;")){
+            try (PreparedStatement ps = conn.prepareStatement("SELECT merchant, SUM(totalPrice) totalExpense FROM " + tableName + " WHERE merchant LIKE %?% AND datetime_ >= ? GROUP BY merchant;")){
                 ps.setString(1, merchant);
                 ps.setString(2, LocalDateTime.now().minusMonths(1).toString());
                 try (ResultSet rs = ps.executeQuery()){
                     while (rs.next()){
                         merchants.add(extractMerchant(rs));
+                    }
+                }
+            }
+            for (MerchantData m: merchants) {
+                try (PreparedStatement ps = conn.prepareStatement("SELECT address, postalCode, category FROM " + tableName + " WHERE merchant=?")) {
+                    ps.setString(1, m.getName());
+                    try(ResultSet rs = ps.executeQuery()){
+                        if(rs.next()){
+                            m.setAddress(rs.getString("address"));
+                            m.setPostalCode(rs.getInt("postalCode"));
+                            m.setCategory(rs.getString("category"));
+                        }
                     }
                 }
             }
@@ -407,9 +439,9 @@ public class DBConnector{
      */
     static MerchantData extractMerchant(ResultSet rs) throws SQLException {
         MerchantData merchant = new MerchantData(rs.getString("merchant"),
-                                                rs.getInt("postalCode"),
-                                                rs.getString("addr"),
-                                                rs.getString("category"),
+                                                -1,
+                                                null,
+                                                null,
                                                 rs.getDouble("totalExpense"));
         return merchant;
     }

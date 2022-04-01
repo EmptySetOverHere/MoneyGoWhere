@@ -23,6 +23,7 @@ public class MerchantServlet extends AbstractServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         System.out.println(req.getQueryString());
         int uid = req.getIntHeader("uid");
+        String merchantName = req.getQueryString();
 //        // return the most recent 5 merchants
 //        MerchantData m = new MerchantData("each a cup", 639798, "50 Nanyang Ave, NS3-01-21 NTU North Spine",
 //                "Beverage", 5.7);
@@ -30,10 +31,18 @@ public class MerchantServlet extends AbstractServlet {
         ArrayList<MerchantData> merchants = null;
         int errorCode = -1;
         String errorMsg = "";
-        try {
-            merchants = DBConnector.getMerchantsDefault(uid);
-        }catch (SQLException e){
-            e.printStackTrace();
+        if (merchantName == null) {
+            try {
+                merchants = DBConnector.getMerchantsDefault(uid);
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }else{
+            try{
+                merchants = DBConnector.getMerchants(uid, merchantName);
+            }catch(SQLException e){
+                e.printStackTrace();
+            }
         }
         resp.setContentType("application/json");
         resp.setCharacterEncoding("UTF-8");

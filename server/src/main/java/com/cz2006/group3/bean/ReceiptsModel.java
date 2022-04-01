@@ -39,7 +39,7 @@ public class ReceiptsModel {
         String ret = "[";
         if (data != null){
             for (ReceiptData r : data) {
-                ret += data.toString() + ",";
+                ret += r.toString() + ",";
             }
             ret = ret.substring(0, ret.length()-1);
         }
