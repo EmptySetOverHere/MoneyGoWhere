@@ -340,7 +340,9 @@ public class DBConnector{
      */
     static ReceiptData extractReceipt(ResultSet rs) throws SQLException{
         ArrayList<ProductData> products = new ArrayList<>();
+        System.out.println(rs.getString("products"));
         JSONArray jsonProducts = new JSONArray(rs.getString("products"));
+
         for (int i =0; i<jsonProducts.length(); i++){
             products.add(new ProductData(new JSONObject(jsonProducts.getString(i))));
         }
@@ -352,7 +354,8 @@ public class DBConnector{
                                     rs.getTimestamp("datetime_").toLocalDateTime(),
                                     rs.getDouble("totalPrice"),
                                     rs.getString("category"),
-                                    products,
+                                    // products,
+                                    null,
                                     rs.getString("content"));
         return receipt;
     }

@@ -25,6 +25,7 @@ public class ReportData {
      */
     ArrayList<ReceiptData> topReceipts;
 
+
     /**
      * Report constructor.
      */
@@ -34,7 +35,9 @@ public class ReportData {
         this.unitExpenses = unitExpenses;
         this.categoricalExpenses = categoricalExpenses;
         this.topReceipts = topReceipts;
+
     }
+
 
     /**
      * Method to convert a report object to a JSON String.
@@ -63,6 +66,8 @@ public class ReportData {
         }
 
         ret = ret.substring(0, ret.length()-1)+ "]";
+
+
         ret+= "}";
         return ret;
     }
