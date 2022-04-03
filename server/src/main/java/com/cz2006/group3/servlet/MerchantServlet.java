@@ -20,10 +20,11 @@ import com.cz2006.group3.bean.MerchantsModel;
 @WebServlet(urlPatterns = "/merchant")
 public class MerchantServlet extends AbstractServlet {
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        System.out.println(req.getQueryString());
-        int uid = req.getIntHeader("uid");
-        String merchantName = req.getQueryString();
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        int uid = Integer.parseInt(req.getHeader("uid"));
+        String merchantName = req.getReader().readLine();
+        System.out.println("User " + uid + " requests for merchants:" + merchantName);
+
 //        // return the most recent 5 merchants
 //        MerchantData m = new MerchantData("each a cup", 639798, "50 Nanyang Ave, NS3-01-21 NTU North Spine",
 //                "Beverage", 5.7);
@@ -34,12 +35,14 @@ public class MerchantServlet extends AbstractServlet {
         if (merchantName == null) {
             try {
                 merchants = DBConnector.getMerchantsDefault(uid);
+                errorCode = 0;
             } catch (SQLException e) {
                 e.printStackTrace();
             }
         }else{
             try{
                 merchants = DBConnector.getMerchants(uid, merchantName);
+                errorCode = 0;
             }catch(SQLException e){
                 e.printStackTrace();
             }

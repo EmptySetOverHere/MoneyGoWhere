@@ -8,15 +8,15 @@ public class ProductData {
     double unitPrice;
 
     public ProductData(JSONObject json){
-        this.pname = json.getString("pname");
+        this.pname = json.getString("name");
         this.quantity = json.getInt("quantity");
         this.unitPrice = json.getDouble("unitPrice");
     }
 
     public String toString(){
-        return "{\"pname\":" + pname
+        return "{\"pname\":" + "\"" + pname + "\""
                 + ",\"quantity\":" +quantity
-                + ",\"unitPrice\"" + unitPrice +"}";
+                + ",\"unitPrice\":" + unitPrice +"}";
     }
 
 }

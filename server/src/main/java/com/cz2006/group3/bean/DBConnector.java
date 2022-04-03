@@ -234,9 +234,6 @@ public class DBConnector{
                 }
             }
         }
-        for (int i =0 ; i< receipts.size(); i++){
-            System.out.println(receipts.get(i).toString());
-        }
         return receipts;
     }
 
@@ -249,31 +246,26 @@ public class DBConnector{
      * @throws SQLException
      */
     public static ArrayList<ReceiptData> getReceipts(int uid, SearchFilter criteria) throws SQLException {
-        String condition = ""; ArrayList<String> categories = null;
-        if (criteria.getContent()!=null){ condition += "products LIKE ? AND "; }
-        if (criteria.getCategory() != null){ categories = criteria.getCategory(); for (int i = 0; i<categories.size(); i++) { condition += "categeory = ? AND "; } }
-        if (criteria.getStartDate() != null){ condition += "DATE(datetime_) >= ? AND "; }
-        if (criteria.getEndDate() != null){ condition += "DATE(datetime_) <= ? AND "; }
-        if (criteria.getPriceLower() != null){ condition += "totalPrice >= ? AND "; }
-        if (criteria.getPriceUpper() != null){ condition += "totalPrice <= ? AND "; }
-        System.out.println(condition);
-        if (condition.substring(condition.length()-5, condition.length()-1).equals("AND ")){
-            condition = condition.substring(condition.length()-5);
+        String tableName = "U" +uid +"_Receipts";
+        String condition = "SELECT * FROM "+tableName + " WHERE "; ArrayList<String> categories = null;
+        if (criteria.getContent()!=null){ System.out.println(criteria.getContent()); condition += "merchant LIKE \'%"+criteria.getContent() +"%\' AND "; }
+        if (criteria.getCategory() != null){ categories = criteria.getCategory(); for (int i = 0; i<categories.size(); i++) { condition += "categeory = \''"+ categories.get(i)+"\' OR "; } }
+        if (criteria.getStartDate() != null){ condition += "DATE(datetime_) >= \'"+criteria.getStartDate().toString()+"\' AND "; }
+        if (criteria.getEndDate() != null){ condition += "DATE(datetime_) <= \'"+criteria.getEndDate().toString()+"\' AND "; }
+        if (criteria.getPriceLower() != null){ condition += "totalPrice >= "+criteria.getPriceLower()+" AND "; }
+        if (criteria.getPriceUpper() != null){ condition += "totalPrice <= "+criteria.getPriceUpper()+" AND "; }
+
+        if (condition.substring(condition.length()-4, condition.length()).equals("AND ")){
+            condition = condition.substring(0,condition.length()-4);
         }
+        if (condition.substring(condition.length()-3, condition.length()).equals("OR ")){
+            condition = condition.substring(0,condition.length()-3);
+        }
+        condition+="ORDER BY datetime_ DESC";
+        System.out.println(condition);
         ArrayList<ReceiptData> receipts = new ArrayList<>();
         try(Connection conn = ds.getConnection()){
-            String tableName = "U" +uid +"_Receipts";
-            try (PreparedStatement ps = conn.prepareStatement("SELECT * FROM " + tableName +
-                    "WHERE " + condition +
-                    "ORDER BY dateTime DESC;")){
-                int index = 0;
-                if (criteria.getContent() != null){ ps.setString(++index,"%" + criteria.getContent() + "%");}
-                if (criteria.getCategory() != null){ for (String c : categories){ ps.setString(++index, c); } }
-                if (criteria.getStartDate() != null){ ps.setString(++index, criteria.getStartDate().toString()); }
-                if (criteria.getEndDate() != null){ ps.setString(++index, criteria.getEndDate().toString()); }
-                if (criteria.getPriceLower() != null){ ps.setDouble(++index, criteria.getPriceLower()); }
-                if (criteria.getPriceUpper() != null){ ps.setDouble(++index, criteria.getPriceUpper()); }
-
+            try (PreparedStatement ps = conn.prepareStatement(condition)){
                 try (ResultSet rs = ps.executeQuery()) {
                     while (rs.next()){ receipts.add(extractReceipt(rs)); }
                 }
@@ -340,7 +332,7 @@ public class DBConnector{
      */
     static ReceiptData extractReceipt(ResultSet rs) throws SQLException{
         ArrayList<ProductData> products = new ArrayList<>();
-        System.out.println(rs.getString("products"));
+        // System.out.println(rs.getString("products"));
         JSONArray jsonProducts = new JSONArray(rs.getString("products"));
 
         for (int i =0; i<jsonProducts.length(); i++){
@@ -354,8 +346,7 @@ public class DBConnector{
                                     rs.getTimestamp("datetime_").toLocalDateTime(),
                                     rs.getDouble("totalPrice"),
                                     rs.getString("category"),
-                                    // products,
-                                    null,
+                                    products,
                                     rs.getString("content"));
         return receipt;
     }
@@ -369,6 +360,7 @@ public class DBConnector{
      * @throws SQLException
      */
     public static ArrayList<MerchantData> getMerchantsDefault(int uid) throws SQLException {
+        System.out.println("getMerchantDefault called");
         ArrayList<MerchantData> merchants = new ArrayList<>();
         try(Connection conn = ds.getConnection()){
             String tableName = "U" + uid + "_Receipts";
@@ -407,9 +399,9 @@ public class DBConnector{
     public static ArrayList<MerchantData> getMerchants(int uid, String merchant) throws SQLException {
         ArrayList<MerchantData> merchants = new ArrayList<>();
         try(Connection conn = ds.getConnection()){
-            String tableName = 'U' + uid + "_Receipts";
-            try (PreparedStatement ps = conn.prepareStatement("SELECT merchant, SUM(totalPrice) totalExpense FROM " + tableName + " WHERE merchant LIKE %?% AND datetime_ >= ? GROUP BY merchant;")){
-                ps.setString(1, merchant);
+            String tableName = "U" + uid + "_Receipts";
+            try (PreparedStatement ps = conn.prepareStatement("SELECT merchant, SUM(totalPrice) totalExpense FROM " + tableName + " WHERE merchant LIKE ? AND datetime_ >= ? GROUP BY merchant;")){
+                ps.setString(1, "%"+merchant+"%");
                 ps.setString(2, LocalDateTime.now().minusMonths(1).toString());
                 try (ResultSet rs = ps.executeQuery()){
                     while (rs.next()){
@@ -461,6 +453,7 @@ public class DBConnector{
     public static ReportData getReport(int uid, LocalDateTime start, LocalDateTime end) throws SQLException{
         ReportData report;
         Double totalExpenditure = 0.0;
+        System.out.println("start: " + start.toString() + " end: " +  end.toString());
         try(Connection conn = ds.getConnection()){
             String tableName = "U" + uid + "_Receipts";
             try (PreparedStatement ps = conn.prepareStatement("SELECT SUM(totalPrice) totalExpenditure FROM " + tableName + " WHERE datetime_ >= ? AND datetime_ <= ?;")){
@@ -475,7 +468,7 @@ public class DBConnector{
             // TODO: may be should not use arraylist
             ArrayList<Double> unitExpenses = new ArrayList<>();
             String condition = "";
-            if (start.getMonthValue() == end.getMonthValue()){ condition  = "GROUP BY DATE(datetime_) ORDER BY DATE(datetime_) ASC";
+            if (end.compareTo(start.plusMonths(1))!=0){ condition  = "GROUP BY DATE(datetime_) ORDER BY DATE(datetime_) ASC";
             }else{ condition = "GROUP BY MONTH(datetime_) ORDER BY MONTH(datetime_) ASC"; }
 
             try (PreparedStatement ps = conn.prepareStatement("SELECT SUM(totalPrice) unitExpense FROM " + tableName + " WHERE datetime_ >= ? AND datetime_ <= ? " + condition + ";")){
@@ -500,6 +493,8 @@ public class DBConnector{
             }
             ArrayList<ReceiptData> topReceipts = new ArrayList<>();
             try (PreparedStatement ps = conn.prepareStatement("SELECT * FROM " + tableName + " WHERE datetime_ >= ? AND datetime_ <= ? ORDER BY totalPrice DESC;")){
+                ps.setString(1, start.toString());
+                ps.setString(2, end.toString());
                 try (ResultSet rs = ps.executeQuery()){
                     while(rs.next()){
                         topReceipts.add(extractReceipt(rs));

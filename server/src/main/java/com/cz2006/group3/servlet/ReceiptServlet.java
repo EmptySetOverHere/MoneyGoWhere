@@ -52,7 +52,7 @@ public class ReceiptServlet extends AbstractServlet {
         resp.setCharacterEncoding("UTF-8");
         PrintWriter pw = resp.getWriter();
         pw.write((new ReceiptsModel(errorCode, errorMsg, receipts)).toString());
-        System.out.println((new ReceiptsModel(errorCode, errorMsg, receipts)).toString());
+        // System.out.println((new ReceiptsModel(errorCode, errorMsg, receipts)).toString());
         pw.flush();
 
     }

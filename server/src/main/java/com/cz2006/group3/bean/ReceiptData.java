@@ -76,8 +76,8 @@ public class ReceiptData{
                 + ",\"dateTime\":" + "\"" + dateTime.toString()
                 + "\",\"totalPrice\":" + totalPrice
                 + ",\"category\":" + "\"" + category + "\""
-                + ",\"content\":" + "\""
+                + ",\"content\":" + "\"" + content + "\""
                 +",\"products\":" + products.toString()
-                + "\"}";
+                + "}";
     }
 }
