@@ -29,8 +29,13 @@ public class ReportServlet extends AbstractServlet {
 //         ReportData report = new ReportData(3.00, unitExp, cateExp, rs);
 //         ReportModel reportmodel = new ReportModel(-1, "first report", report);
          int uid = req.getIntHeader("uid");
-        Integer year = Integer.parseInt(req.getParameter("year"));
-        Integer month = Integer.parseInt(req.getParameter("month"));
+        // System.out.println(req.getParameter("year")+" "+req.getParameter("month"));
+         Integer year = null, month = null;
+        if (!req.getParameter("year").equals("null"))
+            year = Integer.parseInt(req.getParameter("year"));
+        if (!req.getParameter("month").equals("null"))
+            month = Integer.parseInt(req.getParameter("month"));
+
         LocalDateTime start, end;
         if (month == null){
             System.out.println("User " + uid + " resquests for " + year + " report");

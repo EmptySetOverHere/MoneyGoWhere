@@ -68,7 +68,7 @@ public class MerchantData {
      */
     @Override
     public String toString(){
-        return "{\"name\":"+ "\":" + name + "\""
+        return "{\"name\":"+ "\"" + name + "\""
                 + ",\"postalCode\":" + postalCode
                 + ",\"address\":" + "\"" + address + "\""
                 + ",\"category\":" + "\"" + category + "\""

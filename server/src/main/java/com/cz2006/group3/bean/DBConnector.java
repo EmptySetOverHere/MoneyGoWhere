@@ -411,9 +411,9 @@ public class DBConnector{
         ArrayList<MerchantData> merchants = new ArrayList<>();
         try(Connection conn = ds.getConnection()){
             String tableName = "U" + uid + "_Receipts";
-            try (PreparedStatement ps = conn.prepareStatement("SELECT merchant, SUM(totalPrice) totalExpense FROM " + tableName + " WHERE merchant LIKE ? AND datetime_ >= ? GROUP BY merchant;")){
+            try (PreparedStatement ps = conn.prepareStatement("SELECT merchant, SUM(totalPrice) totalExpense FROM " + tableName + " WHERE merchant LIKE ? GROUP BY merchant;")){
                 ps.setString(1, "%"+merchant+"%");
-                ps.setString(2, LocalDateTime.now().minusMonths(1).toString());
+                // ps.setString(2, LocalDateTime.now().minusMonths(1).toString());
                 try (ResultSet rs = ps.executeQuery()){
                     while (rs.next()){
                         merchants.add(extractMerchant(rs));
@@ -464,7 +464,7 @@ public class DBConnector{
     public static ReportData getReport(int uid, LocalDateTime start, LocalDateTime end) throws SQLException{
         ReportData report;
         Double totalExpenditure = 0.0;
-        System.out.println("start: " + start.toString() + " end: " +  end.toString());
+        // System.out.println("start: " + start.toString() + " end: " +  end.toString());
         try(Connection conn = ds.getConnection()){
             String tableName = "U" + uid + "_Receipts";
             try (PreparedStatement ps = conn.prepareStatement("SELECT SUM(totalPrice) totalExpenditure FROM " + tableName + " WHERE datetime_ >= ? AND datetime_ <= ?;")){
@@ -477,17 +477,27 @@ public class DBConnector{
                 }
             }
             // TODO: may be should not use arraylist
-            ArrayList<Double> unitExpenses = new ArrayList<>();
-            String condition = "";
-            if (end.compareTo(start.plusMonths(1))!=0){ condition  = "GROUP BY DATE(datetime_) ORDER BY DATE(datetime_) ASC";
-            }else{ condition = "GROUP BY MONTH(datetime_) ORDER BY MONTH(datetime_) ASC"; }
-
-            try (PreparedStatement ps = conn.prepareStatement("SELECT SUM(totalPrice) unitExpense FROM " + tableName + " WHERE datetime_ >= ? AND datetime_ <= ? " + condition + ";")){
-                ps.setString(1, start.toString());
-                ps.setString(2, end.toString());
+            ArrayList<Double> unitExpenses;
+            String condition = "SELECT ";
+            if (end.compareTo(start.plusMonths(1))==0){
+                unitExpenses = new ArrayList<>(start.getDayOfMonth());
+                // System.out.println(start.toLocalDate().lengthOfMonth());
+                for (int i =0 ; i<start.toLocalDate().lengthOfMonth(); i++){
+                    unitExpenses.add(0.0);
+                }
+                condition += "DAY(datetime_) _index, SUM(totalPrice) unitExpense FROM " + tableName + " WHERE datetime_ >= \'"+ start.toString() + "\' AND datetime_ <= \'" +end.toString() + "\' GROUP BY DATE(datetime_) ORDER BY DATE(datetime_) ASC";
+            }else{
+                unitExpenses = new ArrayList<>(12);
+                for (int i =0; i< 12; i++){
+                    unitExpenses.add(0.0);
+                }
+                condition += "MONTH(datetime_) _index, SUM(totalPrice) unitExpense FROM " + tableName + " WHERE datetime_ >= \'"+ start.toString() + "\' AND datetime_ <= \'" +end.toString() + "\' GROUP BY MONTH(datetime_) ORDER BY MONTH(datetime_) ASC";
+            }
+            // System.out.println(condition);
+            try (PreparedStatement ps = conn.prepareStatement(condition+ ";")){
                 try (ResultSet rs = ps.executeQuery()){
                     while(rs.next()){
-                        unitExpenses.add(rs.getDouble("unitExpense"));
+                        unitExpenses.set(rs.getInt("_index")-1, rs.getDouble("unitExpense"));
                     }
                 }
             }
