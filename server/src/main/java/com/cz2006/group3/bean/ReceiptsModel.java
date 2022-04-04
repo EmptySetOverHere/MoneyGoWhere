@@ -37,14 +37,14 @@ public class ReceiptsModel {
     @Override
     public String toString(){
         String ret = "[";
-        if (data != null || data.size() != 0){
+        if (data != null && data.size() > 0){
             for (ReceiptData r : data) {
                 ret += r.toString() + ",";
             }
             ret = ret.substring(0, ret.length()-1);
         }
         ret += "]";
-
+        // System.out.println("ret: " + ret);
         return "{\"errorCode\":" + errorCode
                 + ",\"errorMsg\":\"" + errorMsg
                 + "\",\"data\":" + ret  + "}";

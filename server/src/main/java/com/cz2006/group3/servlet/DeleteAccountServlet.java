@@ -20,13 +20,19 @@ public class DeleteAccountServlet extends AbstractServlet {
     protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         int uid = req.getIntHeader("uid");
         System.out.println("User " + uid + "requests for deleting account");
+        int errorCode = -1;
+        String errorMsg = "";
         try {
             DBConnector.DeleteUser(uid);
+            errorCode = 0;
+            errorMsg = "Delete account successfull";
         }catch (SQLException e){
+            errorMsg = "Delete account failed";
             e.printStackTrace();
         }
+        String retJson  = "{\"errorCode\":" + errorCode + ",\"errorMsg\":\"" + errorMsg + "\"}";
         PrintWriter pw = resp.getWriter();
-        pw.write("Delete account successfull");
+        pw.write(retJson);
         pw.flush();
     }
 

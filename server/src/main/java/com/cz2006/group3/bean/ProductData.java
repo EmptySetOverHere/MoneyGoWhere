@@ -24,7 +24,7 @@ public class ProductData {
      * @param json object that represents a product
      */
     public ProductData(JSONObject json){
-        this.pname = json.getString("name");
+        this.pname = json.getString("pname");
         this.quantity = json.getInt("quantity");
         this.unitPrice = json.getDouble("unitPrice");
     }

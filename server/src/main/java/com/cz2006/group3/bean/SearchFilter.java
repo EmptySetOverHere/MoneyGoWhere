@@ -89,7 +89,7 @@ public class SearchFilter {
                 this.endDate = LocalDate.parse(jsonQuery.getString("endDate"), formatter);
                 isnull = false;
             }
-            System.out.println("isnull = "+isnull);
+            // System.out.println("isnull = "+isnull);
     }
 
     /**

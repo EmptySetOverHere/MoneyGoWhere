@@ -299,18 +299,26 @@ public class DBConnector{
         try(Connection conn = ds.getConnection()) {
             for (int i = 0; i<receipts.length(); i++){
                 JSONObject r = (JSONObject) receipts.get(i);
+                JSONArray prodArr = r.getJSONArray("products");
+                String prod = "[\'";
+                for (int j = 0; j< prodArr.length(); j++){
+                    prod += prodArr.getString(i) + "\',\'";
+                }
+                prod = prod.substring(0, prod.length()-3);
+                prod += "\']";
+
                 try (PreparedStatement ps = conn.prepareStatement("INSERT INTO " + tableName +
                         " (rid, merchant,address, postalCode, datetime_, totalPrice, category, content, products)" +
-                        " VALUES (?, ?, ?, ?, ?, ?, ?, ? )")){
+                        " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ? )")){
                     ps.setString(1, r.getString("id"));
                     ps.setString(2, r.getString("merchant"));
                     ps.setString(3, r.getString("address"));
                     ps.setInt(4, r.getInt("postalCode"));
-                    ps.setString(5, r.getString("datetime_"));
+                    ps.setString(5, r.getString("dateTime"));
                     ps.setDouble(6, r.getDouble("totalPrice"));
                     ps.setString(7, r.getString("category"));
                     ps.setString(8, r.getString("content"));
-                    ps.setString(9, r.getString("products"));
+                    ps.setString(9, prod);
                     ps.executeUpdate();
                 }
             }
@@ -371,7 +379,7 @@ public class DBConnector{
      * @throws SQLException
      */
     public static ArrayList<MerchantData> getMerchantsDefault(int uid) throws SQLException {
-        System.out.println("getMerchantDefault called");
+
         ArrayList<MerchantData> merchants = new ArrayList<>();
         try(Connection conn = ds.getConnection()){
             String tableName = "U" + uid + "_Receipts";

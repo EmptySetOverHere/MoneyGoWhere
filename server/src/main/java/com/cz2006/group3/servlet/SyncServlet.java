@@ -24,7 +24,10 @@ public class SyncServlet extends AbstractServlet{
     @ Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         int uid = req.getIntHeader("uid");
-        JSONObject jsonQuery = new JSONObject(req.getReader().readLine());
+        System.out.println("User " + uid + " is syncing...");
+        String line = req.getReader().readLine();
+        System.out.println(line);
+        JSONObject jsonQuery = new JSONObject(line);
         JSONArray dataArr = jsonQuery.getJSONArray("data");
         int errorCode = -1;
         String errorMsg = "";
@@ -37,7 +40,7 @@ public class SyncServlet extends AbstractServlet{
             e.printStackTrace();
         }
         String retJson = "{\"errorCode\":" + errorCode
-                + ",\"errorMsg\":\"" + errorMsg + "}";
+                + ",\"errorMsg\":\"" + errorMsg + "\"}";
         PrintWriter pw = resp.getWriter();
         pw.write(retJson);
         pw.flush();
