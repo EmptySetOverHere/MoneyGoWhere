@@ -11,7 +11,9 @@ import java.util.ArrayList;
  * that contains the filtering criteria made by user.
  */
 public class SearchFilter {
-
+    /**
+     * a boolean value to indicate if all fields of the class are null value
+     */
     boolean isnull;
     /**
      *  Search keyword
@@ -56,7 +58,6 @@ public class SearchFilter {
                 this.content = jsonQuery.getString("content");
                 isnull = false;
             }
-            else this.content = "";
 
             this.category = new ArrayList<>();
             if (!jsonQuery.isNull("category")) {

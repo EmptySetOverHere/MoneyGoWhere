@@ -247,9 +247,20 @@ public class DBConnector{
      */
     public static ArrayList<ReceiptData> getReceipts(int uid, SearchFilter criteria) throws SQLException {
         String tableName = "U" +uid +"_Receipts";
-        String condition = "SELECT * FROM "+tableName + " WHERE "; ArrayList<String> categories = null;
-        if (criteria.getContent()!=null){ System.out.println(criteria.getContent()); condition += "merchant LIKE \'%"+criteria.getContent() +"%\' AND "; }
-        if (criteria.getCategory() != null){ categories = criteria.getCategory(); for (int i = 0; i<categories.size(); i++) { condition += "categeory = \''"+ categories.get(i)+"\' OR "; } }
+        String condition = "SELECT * FROM " + tableName + " WHERE "; ArrayList<String> categories = null;
+        if (criteria.getContent()!=null){
+            System.out.println(criteria.getContent());
+            condition += "merchant LIKE \'%" + criteria.getContent() +"%\' OR products LIKE \'%" + criteria.getContent()+ "%\' AND "; }
+        if (criteria.getCategory() != null){
+            categories = criteria.getCategory();
+            for (int i = 0; i<categories.size(); i++) {
+                condition += "category = \'"+ categories.get(i)+"\' OR ";
+            }
+        }
+        if (condition.substring(condition.length()-3, condition.length()).equals("OR ")){
+            condition = condition.substring(0,condition.length()-3);
+            condition += "AND ";
+        }
         if (criteria.getStartDate() != null){ condition += "DATE(datetime_) >= \'"+criteria.getStartDate().toString()+"\' AND "; }
         if (criteria.getEndDate() != null){ condition += "DATE(datetime_) <= \'"+criteria.getEndDate().toString()+"\' AND "; }
         if (criteria.getPriceLower() != null){ condition += "totalPrice >= "+criteria.getPriceLower()+" AND "; }
@@ -482,6 +493,10 @@ public class DBConnector{
             }
 
             HashMap<String, Double> categoricalExpenses = new HashMap<>();
+            categoricalExpenses.put("Groceries", 0.0);
+            categoricalExpenses.put("Food", 0.0);
+            categoricalExpenses.put("Fashion", 0.0);
+            categoricalExpenses.put("Electronics",0.0);
             try (PreparedStatement ps = conn.prepareStatement("SELECT category, SUM(totalPrice) totalExpense FROM " + tableName + " WHERE datetime_ >= ? AND datetime_ <= ? GROUP BY category")){
                 ps.setString(1, start.toString());
                 ps.setString(2, end.toString());

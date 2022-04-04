@@ -33,11 +33,11 @@ public class ReportServlet extends AbstractServlet {
         Integer month = Integer.parseInt(req.getParameter("month"));
         LocalDateTime start, end;
         if (month == null){
-            System.out.println("User " + uid + "resquests for " + year + " report");
+            System.out.println("User " + uid + " resquests for " + year + " report");
             start = LocalDateTime.of(year, 1, 1, 0, 0, 0);
             end = start.plusYears(1);
         }else{
-            System.out.println("User " + uid + "resquests for " + month + "/" + year+" report");
+            System.out.println("User " + uid + " resquests for " + month + "/" + year+" report");
             start = LocalDateTime.of(year, month, 1, 0, 0, 0);
             end = start.plusMonths(1);
         }

@@ -19,7 +19,9 @@ public class ReceiptData{
      * The name of the merchant.
      */
     String merchant;
-
+    /**
+     * The address of the shop
+     */
     String address;
     /**
      * The postal code of the merchant.
@@ -42,6 +44,9 @@ public class ReceiptData{
      */
     String content;
 
+    /**
+     * The list of products in a receipt
+     */
     ArrayList<ProductData> products;
 
     /**

@@ -48,6 +48,11 @@ public class ReceiptServlet extends AbstractServlet {
                 e.printStackTrace();
             }
         }
+        if (receipts.isEmpty()) {
+            errorMsg = "No match!";
+            errorCode = -1;
+        }
+
         resp.setContentType("application/json");
         resp.setCharacterEncoding("UTF-8");
         PrintWriter pw = resp.getWriter();

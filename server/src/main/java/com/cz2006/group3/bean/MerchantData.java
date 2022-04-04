@@ -36,11 +36,29 @@ public class MerchantData {
         this.totalExpense = totalExpense;
     }
 
+    /**
+     * @return the name of a merchant
+     */
     public String getName(){
         return this.name;
     }
+
+    /**
+     * Setter to set postal code field of a merchant
+     * @param postalCode to be set
+     */
     public void setPostalCode(int postalCode) {this.postalCode = postalCode;}
+
+    /**
+     * Setter to set the address field of a merchant
+     * @param address to be set
+     */
     public void setAddress(String address) {this.address = address;}
+
+    /**
+     * Setter to set the category field of a merchant
+     * @param category to be set
+     */
     public void setCategory(String category) {this.category = category;}
 
     /**

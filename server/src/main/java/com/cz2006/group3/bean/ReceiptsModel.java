@@ -37,7 +37,7 @@ public class ReceiptsModel {
     @Override
     public String toString(){
         String ret = "[";
-        if (data != null){
+        if (data != null || data.size() != 0){
             for (ReceiptData r : data) {
                 ret += r.toString() + ",";
             }

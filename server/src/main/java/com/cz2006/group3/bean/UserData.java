@@ -27,6 +27,11 @@ public class UserData{
 
     /**
      * User Constructor.
+     * @param id the unique identifier of the user
+     * @param email the email of the user
+     * @param password the encrpyted password of user account
+     * @param username the username of the user
+     * @param phoneno the user's phone number
      */
     public UserData(int id, String email, String password, String username, int phoneno){
         this.id = id;
