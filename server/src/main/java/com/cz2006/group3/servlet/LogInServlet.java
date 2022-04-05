@@ -37,8 +37,13 @@ public class LogInServlet extends AbstractServlet{
             errorMsg = "database connection error";
             e.printStackTrace();
         }
-
-        String expectedPassword = matchedUser.getPassword();
+        String expectedPassword = null;
+        if (matchedUser != null) {
+            expectedPassword = matchedUser.getPassword();
+        }else{
+            errorCode = -1;
+            errorMsg = "No matched user!";
+        }
         resp.setContentType("application/json");
         PrintWriter pw = resp.getWriter();
 
@@ -50,6 +55,7 @@ public class LogInServlet extends AbstractServlet{
         } else {
             errorMsg = "Wrong email or password";
         }
+
         pw.write((new UserModel(errorCode, errorMsg, matchedUser)).toString());
         pw.flush();
     }
