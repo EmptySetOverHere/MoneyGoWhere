@@ -4,6 +4,8 @@ This is CZ2006 Group Project.
 
 The main idea is to digitalize daily receipts to save the environment.
 
+credit to: @chor_cheng,@Timmy,@Keith,@Yujing,@Me
+
 ![alt text](https://github.com/maffinnn/MoneyGoWhere/blob/master/images/Intro%20Sldie.jpg?raw=true)
 ![alt text](https://github.com/maffinnn/MoneyGoWhere/blob/master/images/Timeline.jpg?raw=true)
 ![alt text](https://github.com/maffinnn/MoneyGoWhere/blob/master/images/Problem.jpg?raw=true)
